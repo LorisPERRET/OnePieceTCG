@@ -12,3 +12,10 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model CardData {
+  id        String   @id
+  code      String
+  name      String
+  image    String
+}
