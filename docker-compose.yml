@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: onepiecetcg
+      POSTGRES_PASSWORD: onepiecetcg_dev_password
+      POSTGRES_DB: onepiecetcg
+    ports:
+      - "5432:5432"
+    volumes:
+      - onepiecetcg_db:/var/lib/postgresql/data
+
+volumes:
+  onepiecetcg_db:
