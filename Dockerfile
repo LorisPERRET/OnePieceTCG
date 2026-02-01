@@ -33,14 +33,19 @@ RUN apk add --no-cache libc6-compat
 # user non-root
 RUN addgroup -S nextjs && adduser -S nextjs -G nextjs
 
-# Next standalone output
+# 1) on copie seulement ce qu'il faut pour installer les deps
+COPY package*.json ./
+COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
+
+# 2) on installe les deps (prisma CLI inclus) dans le runner
+# (si prisma est en devDependencies, ça ne sera pas installé en prod → important, voir note)
+RUN npm ci
+
+# 3) on copie la build Next standalone
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-
-# Prisma schema (migrate deploy en a besoin)
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 RUN apk add --no-cache libc6-compat netcat-openbsd
 
