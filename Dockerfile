@@ -41,11 +41,6 @@ COPY --from=builder /app/public ./public
 # Prisma schema (migrate deploy en a besoin)
 COPY --from=builder /app/prisma ./prisma
 
-# ⚠️ Important pour Prisma runtime:
-# selon setup, les engines peuvent être nécessaires
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-
 USER nextjs
 
 EXPOSE 3000
