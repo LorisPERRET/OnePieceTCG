@@ -40,8 +40,11 @@ COPY --from=builder /app/public ./public
 
 # Prisma schema (migrate deploy en a besoin)
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+
+RUN apk add --no-cache libc6-compat netcat-openbsd
 
 USER nextjs
 
 EXPOSE 3000
-CMD ["sh", "-lc", "npx prisma migrate deploy && node server.js"]
+CMD ["sh", "-lc", "until nc -z db 5432; do echo 'waiting for db...'; sleep 1; done; npx prisma migrate deploy && node server.js"]
