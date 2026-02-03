@@ -52,4 +52,4 @@ RUN apk add --no-cache libc6-compat netcat-openbsd
 USER nextjs
 
 EXPOSE 3000
-CMD ["sh", "-lc", "until nc -z db 5432; do echo 'waiting for db...'; sleep 1; done; npx prisma migrate deploy && node server.js"]
+CMD ["sh", "-lc", "until nc -z db 5432; do echo 'waiting for db...'; sleep 1; done; npx prisma migrate deploy && node server.js; npm run sync:cards"]
