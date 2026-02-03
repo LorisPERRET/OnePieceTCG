@@ -37,6 +37,7 @@ RUN addgroup -S nextjs && adduser -S nextjs -G nextjs
 COPY package*.json ./
 COPY prisma ./prisma
 COPY prisma.config.ts ./prisma.config.ts
+COPY scripts/sync-cards.ts ./scripts/sync-cards.ts
 
 # 2) on installe les deps (prisma CLI inclus) dans le runner
 # (si prisma est en devDependencies, ça ne sera pas installé en prod → important, voir note)
