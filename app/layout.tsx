@@ -35,10 +35,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AppSessionProvider>
-          <div className="min-h-screen bg-gray-50">
+          <div className="flex min-h-screen flex-col bg-gray-50">
             <TopHeader />
             <TopNav />
-            <main className="container mx-auto px-4 py-8">{children}</main>
+            <main className="container mx-auto flex flex-1 flex-col px-4 py-8">{children}</main>
             <Footer />
           </div>
         </AppSessionProvider>
