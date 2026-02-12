@@ -20,6 +20,8 @@ export function CardTile({
   footerLabel,
   status
 }: CardTileProps) {
+  const imageSrc = image || "/card-placeholder.jpg";
+
   return (
     <Card key={id} className="hover:shadow-md transition-shadow">
       <CardContent className="p-4">
@@ -31,7 +33,7 @@ export function CardTile({
         </div>
         <div className="w-full overflow-hidden rounded-m pt-4">
           <Image 
-            src={image} 
+            src={imageSrc} 
             alt={name} 
             className="h-full w-full object-cover"
             width={0}

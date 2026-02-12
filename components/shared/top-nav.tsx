@@ -37,7 +37,7 @@ export function TopNav() {
 
   return (
     <Tabs value={active} className="w-full mt-4">
-      <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-4">
+      <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
         {navItems.map((item) => (
             <TabsTrigger key={item.href}
                      value={item.href} asChild className="flex items-center gap-2">
