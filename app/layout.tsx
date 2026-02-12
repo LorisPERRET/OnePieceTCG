@@ -4,6 +4,8 @@ import { TopNav } from "@/components/shared/top-nav";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TopHeader } from "@/components/shared/top-header";
 import { Footer } from "@/components/shared/footer";
+import { AppSessionProvider } from "@/components/shared/session-provider";
+
 
 import "./globals.css";
 
@@ -32,12 +34,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="min-h-screen bg-gray-50">
-        <TopHeader />
-        <TopNav />
-        <main className="container mx-auto px-4 py-8">{children}</main>
-        <Footer />
-      </div>
+        <AppSessionProvider>
+          <div className="min-h-screen bg-gray-50">
+            <TopHeader />
+            <TopNav />
+            <main className="container mx-auto px-4 py-8">{children}</main>
+            <Footer />
+          </div>
+        </AppSessionProvider>
       </body>
     </html>
   );

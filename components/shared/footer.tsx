@@ -1,13 +1,15 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
 
 export function Footer() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const isAuthPage = pathname.startsWith("/auth");
+  const userLabel = session?.user?.name ?? session?.user?.email ?? "Utilisateur";
 
   if (isAuthPage) {
     return null;
@@ -19,7 +21,7 @@ export function Footer() {
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <p className="text-sm text-gray-600">Connecté en tant que</p>
-              {/* <p className="text-sm font-bold text-gray-900">{user.name}</p> */}
+              <p className="text-sm font-bold text-gray-900">{userLabel}</p>
             </div>
             <Button
               variant="outline"
@@ -34,4 +36,3 @@ export function Footer() {
       </footer>
   );
 }
-
