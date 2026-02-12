@@ -5,6 +5,9 @@ import { getSearchParamNumber } from "@/lib/utils/getSearchParamNumber";
 import { CardTile } from '@/components/shared/card-tile';
 import { Pagination } from '@/components/shared/pagination';
 import { SearchInput } from '@/components/shared/search';
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { DeleteCardButton } from "./deleteCardButton";
 
 const PAGE_SIZE = 25;
 
@@ -44,11 +47,14 @@ export default async function CollectionPage({ searchParams }: CollectionPagePro
                 {paginated.items.map(({ card, quantity }) => (
                   <CardTile
                     id={card.id}
-                    key={card.code}
+                    key={card.id}
                     code={card.code}
                     name={card.name}
                     image={card.image}
                     quantity={quantity}
+                    action={
+                      <DeleteCardButton cardId={card.id} />
+                    }
                   />
                 ))}
               </div>

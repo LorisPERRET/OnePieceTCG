@@ -3,6 +3,7 @@ import { getSearchParamNumber } from "@/lib/utils/getSearchParamNumber";
 import { CardTile } from '@/components/shared/card-tile';
 import { Pagination } from '@/components/shared/pagination';
 import { SearchInput } from '@/components/shared/search';
+import { AddCardDialog } from "./addCardDialog";
 
 const PAGE_SIZE = 25;
 
@@ -33,13 +34,16 @@ export default async function CardsPage({ searchParams }: CardsPageProps) {
         ) : (
             <div className="grid grid-cols-5 gap-4">
               {paginated.items.map((card) => (
-                    <CardTile
-                        key={card.id}
-                        code={card.code}
-                        name={card.name}
-                        image={card.image}
-                        id={card.id}                
-                    />
+                  <CardTile
+                      key={card.id}
+                      code={card.code}
+                      name={card.name}
+                      image={card.image}
+                      id={card.id}        
+                      action={
+                        <AddCardDialog cardId={card.id} />
+                      }        
+                  />
                 ))}
             </div>
         )}
