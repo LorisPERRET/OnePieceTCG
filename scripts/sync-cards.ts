@@ -18,8 +18,8 @@ type ApiResponse = {
   data: ApiCard[];
 };
 
-const API_URL = process.env.APITCG_API_URL || "https://apitcg.com/api/one-piece/cards";
-const API_KEY = process.env.APITCG_API_KEY;
+const API_URL = "https://apitcg.com/api/one-piece/cards";
+const API_KEY = process.env.API_TCG_KEY;
 
 async function fetchPage(page: number): Promise<ApiResponse> {
   if (!API_KEY) {
@@ -62,7 +62,7 @@ async function main() {
   console.log(`[sync] received ${cards.length} cards`);
 
   const operations = cards.map((card) =>
-    prisma.cardData.upsert({
+    prisma.card.upsert({
       where: { id: card.id },
       update: {
         code: card.code,

@@ -1,5 +1,7 @@
 @import 'tailwindcss' source(none);
-@source '../**/*.{js,ts,jsx,tsx}';
+@source "../app/**/*.{js,ts,jsx,tsx}";
+@source "../components/**/*.{js,ts,jsx,tsx}";
+@source "../lib/**/*.{js,ts,jsx,tsx}";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -180,5 +182,37 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+}
+
+@layer components {
+  .pager-wrap {
+    @apply mt-3 grid gap-2.5;
+  }
+
+  .pager-caption {
+    @apply text-sm text-slate-600;
+  }
+
+  .pager {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .pager-link,
+  .pager-ellipsis {
+    @apply inline-flex h-9 min-w-9 items-center justify-center rounded-lg border border-slate-300/70 px-2.5;
+  }
+
+  .pager-link:hover {
+    @apply border-slate-600/40;
+  }
+
+  .pager-link.is-active {
+    @apply border-transparent text-white;
+    background: linear-gradient(120deg, #c04f2e, #8d3016);
+  }
+
+  .pager-link[aria-disabled="true"] {
+    @apply pointer-events-none opacity-40;
   }
 }
