@@ -1,7 +1,7 @@
-"use server";
+"use server"
 
-import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import prisma from "@/lib/prisma"
+import { revalidatePath } from "next/cache"
 
 export type AddCardToCollectionResult = {
     success: boolean;
@@ -32,9 +32,9 @@ export async function addCardToCollection(options: AddCardToCollectionOption): P
                 increment: options.quantity,
             },
         },
-    });
+    })
 
-    revalidatePath("/cards");
+    revalidatePath("/cards")
 
-    return { success: true };
+    return { success: true }
 }

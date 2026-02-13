@@ -1,7 +1,7 @@
-import prisma from "@/lib/prisma";
-import { normalize } from "@/lib/utils/normalizeString";
-import type { Card } from "@/app/generated/prisma/client";
-import type { CardWhereInput } from "@/app/generated/prisma/models/Card";
+import prisma from "@/lib/prisma"
+import { normalize } from "@/lib/utils/normalizeString"
+import type { Card } from "@/app/generated/prisma/client"
+import type { CardWhereInput } from "@/app/generated/prisma/models/Card"
 
 export type GetCardsResult = {
     page: number;
@@ -18,10 +18,10 @@ type GetCardsOptions = {
 };
 
 export async function getCardsPageData(options: GetCardsOptions = {}): Promise<GetCardsResult> {
-    const requestedPage = Math.max(1, options.page ?? 1);
-    const limit = Math.max(1, Math.min(options.limit ?? 100, 500));
-    const skip = (requestedPage - 1) * limit;
-    const query = normalize(options.query?.trim());
+    const requestedPage = Math.max(1, options.page ?? 1)
+    const limit = Math.max(1, Math.min(options.limit ?? 100, 500))
+    const skip = (requestedPage - 1) * limit
+    const query = normalize(options.query?.trim())
     const where: CardWhereInput | undefined = query
         ? {
             OR: [
@@ -29,7 +29,7 @@ export async function getCardsPageData(options: GetCardsOptions = {}): Promise<G
                 { code: { contains: query, mode: "insensitive" } },
             ],
         }
-        : undefined;
+        : undefined
 
     const [totalItems, items] = await Promise.all([
         prisma.card.count({ where }),
@@ -39,10 +39,10 @@ export async function getCardsPageData(options: GetCardsOptions = {}): Promise<G
             take: limit,
             orderBy: { id: "asc" },
         }),
-    ]);
+    ])
 
-    const totalPages = Math.max(1, Math.ceil(totalItems / limit));
-    const page = Math.min(requestedPage, totalPages);
+    const totalPages = Math.max(1, Math.ceil(totalItems / limit))
+    const page = Math.min(requestedPage, totalPages)
 
     return {
         page,
@@ -50,5 +50,5 @@ export async function getCardsPageData(options: GetCardsOptions = {}): Promise<G
         totalItems,
         totalPages,
         items,
-    };
+    }
 }

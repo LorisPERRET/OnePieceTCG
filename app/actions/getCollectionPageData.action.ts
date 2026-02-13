@@ -1,4 +1,4 @@
-import { getCollectionPageData, type GetCollectionResult } from "@/lib/services/getCollectionPageData";
+import { getCollectionPageData, type GetCollectionResult } from "@/lib/services/getCollectionPageData"
 
 export async function getCollectionPageDataAction(
     userId: string,
@@ -6,5 +6,5 @@ export async function getCollectionPageDataAction(
     limit = 25,
     query: string | undefined
 ): Promise<GetCollectionResult> {
-    return getCollectionPageData({ userId, page, limit, query });
+    return getCollectionPageData({ userId, page, limit, query })
 }

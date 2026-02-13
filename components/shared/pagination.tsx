@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from "lucide-react";
-import Link from "next/link";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { Button } from "../ui/button";
-import { getParams } from "@/lib/utils/getParams";
-import { range } from "@/lib/utils/range";
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from "lucide-react"
+import Link from "next/link"
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation"
+import { Button } from "../ui/button"
+import { getParams } from "@/lib/utils/getParams"
+import { range } from "@/lib/utils/range"
 
 interface PaginationProps {
     page: number;
@@ -25,24 +25,24 @@ export function Pagination({
     const lastPage = Math.max(Math.ceil(totalItems / pageSize), 1)
     const nextPage = page >= lastPage ? lastPage : page + 1
 
-    const firstItem = (page - 1) * pageSize + 1;
-    const lastItem = Math.min(page * pageSize, totalItems);
+    const firstItem = (page - 1) * pageSize + 1
+    const lastItem = Math.min(page * pageSize, totalItems)
 
     const canGoNext = page < lastPage
     const canGoPrevious = page > 1
     const canGoFirst = page > 1
     const canGoLast = page < lastPage
 
-    const windowStart = Math.max(1, page - 2);
-    const windowEnd = Math.min(lastPage, page + 2);
-    const pages = range(windowStart, windowEnd);
+    const windowStart = Math.max(1, page - 2)
+    const windowEnd = Math.min(lastPage, page + 2)
+    const pages = range(windowStart, windowEnd)
 
     if (lastPage <= 1) {
         return (
             <div className="pager-wrap">
                 <p className="pager-caption">{totalItems} elements</p>
             </div>
-        );
+        )
     }
 
     return (
@@ -126,5 +126,5 @@ export function Pagination({
                 </Button>
             </nav>
         </div>
-    );
+    )
 }

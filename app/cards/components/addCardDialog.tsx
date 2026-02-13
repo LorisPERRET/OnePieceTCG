@@ -1,59 +1,59 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { markCollectionUpdated } from "@/lib/utils/collectionSync";
-import { Minus, Plus, X } from "lucide-react";
-import { useState, useTransition } from "react";
-import { addCardToCollectionAction } from "../../actions/addCardToCollection.action";
-import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button"
+import { markCollectionUpdated } from "@/lib/utils/collectionSync"
+import { Minus, Plus, X } from "lucide-react"
+import { useState, useTransition } from "react"
+import { addCardToCollectionAction } from "../../actions/addCardToCollection.action"
+import { useSession } from "next-auth/react"
 
 interface AddCardDialogProps {
     cardId: string;
 }
 
 export function AddCardDialog({ cardId }: AddCardDialogProps) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [quantity, setQuantity] = useState("1");
-    const [isPending, startTransition] = useTransition();
-    const [error, setError] = useState("");
+    const [isOpen, setIsOpen] = useState(false)
+    const [quantity, setQuantity] = useState("1")
+    const [isPending, startTransition] = useTransition()
+    const [error, setError] = useState("")
 
-    const { data: session } = useSession();
-    const userId = session?.user?.id;
+    const { data: session } = useSession()
+    const userId = session?.user?.id
 
     const getQuantityError = (value: string) => {
         if (value.trim() === "") {
-            return "La quantite est obligatoire.";
+            return "La quantite est obligatoire."
         }
         if (!/^\d+$/.test(value)) {
-            return "La quantite doit etre un nombre entier.";
+            return "La quantite doit etre un nombre entier."
         }
 
-        const parsed = Number(value);
+        const parsed = Number(value)
         if (parsed < 1 || parsed > 99) {
-            return "La quantite doit etre comprise entre 1 et 99.";
+            return "La quantite doit etre comprise entre 1 et 99."
         }
 
-        return null;
-    };
+        return null
+    }
 
-    const quantityError = getQuantityError(quantity);
-    const isQuantityValid = quantityError === null;
-    const isError = !isQuantityValid || error != "";
+    const quantityError = getQuantityError(quantity)
+    const isQuantityValid = quantityError === null
+    const isError = !isQuantityValid || error != ""
 
     const close = () => {
-        setIsOpen(false);
-        setQuantity("1");
-    };
+        setIsOpen(false)
+        setQuantity("1")
+    }
 
     const increase = () => {
-        const current = isQuantityValid ? Number(quantity) : 0;
-        setQuantity(String(Math.min(99, current + 1)));
-    };
+        const current = isQuantityValid ? Number(quantity) : 0
+        setQuantity(String(Math.min(99, current + 1)))
+    }
 
     const decrease = () => {
-        const current = isQuantityValid ? Number(quantity) : 1;
-        setQuantity(String(Math.max(1, current - 1)));
-    };
+        const current = isQuantityValid ? Number(quantity) : 1
+        setQuantity(String(Math.max(1, current - 1)))
+    }
 
     const addCard = () => {
         startTransition(async () => {
@@ -61,14 +61,14 @@ export function AddCardDialog({ cardId }: AddCardDialogProps) {
             if (userId != undefined && isQuantityValid) {
                 const result = await addCardToCollectionAction(userId, cardId, Number(quantity))
                 if (result.success) {
-                    markCollectionUpdated();
+                    markCollectionUpdated()
                     close()
                 } else {
                     setError("Une erreur est survenu !")
                 }
             }
-        });
-    };
+        })
+    }
 
     return (
         <>
@@ -173,5 +173,5 @@ export function AddCardDialog({ cardId }: AddCardDialogProps) {
                 </div>
             ) : null}
         </>
-    );
+    )
 }

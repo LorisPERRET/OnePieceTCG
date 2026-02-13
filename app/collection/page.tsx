@@ -1,15 +1,15 @@
-import { auth } from "@/lib/services/auth";
-import { redirect } from "next/navigation";
-import { getCollectionPageDataAction } from "../actions/getCollectionPageData.action";
-import { getSearchParamNumber } from "@/lib/utils/getSearchParamNumber";
-import { CardTile } from '@/components/shared/card-tile';
-import { Pagination } from '@/components/shared/pagination';
-import { SearchInput } from '@/components/shared/search';
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
-import { DeleteCardButton } from "./components/deleteCardButton";
+import { auth } from "@/lib/services/auth"
+import { redirect } from "next/navigation"
+import { getCollectionPageDataAction } from "../actions/getCollectionPageData.action"
+import { getSearchParamNumber } from "@/lib/utils/getSearchParamNumber"
+import { CardTile } from '@/components/shared/card-tile'
+import { Pagination } from '@/components/shared/pagination'
+import { SearchInput } from '@/components/shared/search'
+import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react"
+import { DeleteCardButton } from "./components/deleteCardButton"
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 25
 
 interface CollectionPageProps {
     searchParams: Promise<{
@@ -19,11 +19,11 @@ interface CollectionPageProps {
 }
 
 export default async function CollectionPage({ searchParams }: CollectionPageProps) {
-    const { page, query } = await searchParams;
-    const session = await auth();
+    const { page, query } = await searchParams
+    const session = await auth()
 
     if (!session?.user?.id) {
-        redirect("/auth/signin");
+        redirect("/auth/signin")
     }
 
     const paginated = await getCollectionPageDataAction(
@@ -31,7 +31,7 @@ export default async function CollectionPage({ searchParams }: CollectionPagePro
         getSearchParamNumber(page, 1),
         PAGE_SIZE,
         query,
-    );
+    )
 
     return (
         <div className="flex h-full flex-1 flex-col gap-6">
@@ -67,5 +67,5 @@ export default async function CollectionPage({ searchParams }: CollectionPagePro
                 </>
             )}
         </div>
-    );
+    )
 }

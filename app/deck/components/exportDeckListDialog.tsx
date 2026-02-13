@@ -1,20 +1,20 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { DeckCard } from "@/lib/services/parseDeck";
-import { X } from "lucide-react";
-import { useState, useTransition } from "react";
-import { copyDeckListAction } from "../../actions/copyDeckList.action";
-import { downloadDeckListAction } from "../../actions/downloadDeckList.action";
+import { Button } from "@/components/ui/button"
+import { DeckCard } from "@/lib/services/parseDeck"
+import { X } from "lucide-react"
+import { useState, useTransition } from "react"
+import { copyDeckListAction } from "../../actions/copyDeckList.action"
+import { downloadDeckListAction } from "../../actions/downloadDeckList.action"
 
 interface ExportDeckListDialogProps {
     missingCards: DeckCard[];
 }
 
 export function ExportDeckListDialog({ missingCards }: ExportDeckListDialogProps) {
-    const [feedback, setFeedback] = useState("");
-    const [showExportOptions, setShowExportOptions] = useState(false);
-    const [isPending, startTransition] = useTransition();
+    const [feedback, setFeedback] = useState("")
+    const [showExportOptions, setShowExportOptions] = useState(false)
+    const [isPending, startTransition] = useTransition()
 
     const close = () => {
         setFeedback("")
@@ -23,27 +23,27 @@ export function ExportDeckListDialog({ missingCards }: ExportDeckListDialogProps
 
     const handleDownloadMissingCards = () => {
         startTransition(async () => {
-            const result = await downloadDeckListAction(missingCards);
+            const result = await downloadDeckListAction(missingCards)
             if (!result.success) {
-                setFeedback(result.error ?? "Erreur pendant l'export.");
-                return;
+                setFeedback(result.error ?? "Erreur pendant l'export.")
+                return
             }
 
-            close();
-        });
-    };
+            close()
+        })
+    }
 
     const handleCopyMissingCards = async () => {
         startTransition(async () => {
-            const result = await copyDeckListAction(missingCards);
+            const result = await copyDeckListAction(missingCards)
             if (!result.success) {
-                setFeedback(result.error ?? "Erreur pendant l'export.");
-                return;
+                setFeedback(result.error ?? "Erreur pendant l'export.")
+                return
             }
 
-            setFeedback(result.feedback ?? "Succès");
-        });
-    };
+            setFeedback(result.feedback ?? "Succès")
+        })
+    }
 
     return (
         <>

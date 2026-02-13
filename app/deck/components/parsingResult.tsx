@@ -1,8 +1,8 @@
-import Image from "next/image";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { DeckCard } from "@/lib/services/parseDeck";
-import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react";
+import Image from "next/image"
+import { useState } from "react"
+import { Badge } from "@/components/ui/badge"
+import { DeckCard } from "@/lib/services/parseDeck"
+import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react"
 
 interface ParsingResultProps {
     title: string;
@@ -10,19 +10,19 @@ interface ParsingResultProps {
 }
 
 const CARD_BLUR_PLACEHOLDER =
-    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMzYwJyBoZWlnaHQ9JzUwNCcgdmlld0JveD0nMCAwIDM2MCA1MDQnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzM2MCcgaGVpZ2h0PSc1MDQnIGZpbGw9JyNlNWU3ZWInLz48L3N2Zz4=";
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMzYwJyBoZWlnaHQ9JzUwNCcgdmlld0JveD0nMCAwIDM2MCA1MDQnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzM2MCcgaGVpZ2h0PSc1MDQnIGZpbGw9JyNlNWU3ZWInLz48L3N2Zz4="
 
 export function ParsingResult(props: ParsingResultProps) {
-    const [openedCardKey, setOpenedCardKey] = useState<string | null>(null);
+    const [openedCardKey, setOpenedCardKey] = useState<string | null>(null)
 
     return (
         <div className="space-y-3">
             <h3 className="font-medium text-lg">{props.title}</h3>
             <div className="space-y-2">
                 {props.cards.map((card, index) => {
-                    const cardKey = `${card.code}-${index}`;
-                    const contentId = `deck-card-preview-${cardKey}`;
-                    const isOpen = openedCardKey === cardKey;
+                    const cardKey = `${card.code}-${index}`
+                    const contentId = `deck-card-preview-${cardKey}`
+                    const isOpen = openedCardKey === cardKey
 
                     return (
                         <div
@@ -103,7 +103,7 @@ export function ParsingResult(props: ParsingResultProps) {
                                 )}
                             </button>
                         </div>
-                    );
+                    )
                 })}
             </div>
         </div>

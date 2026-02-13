@@ -1,12 +1,12 @@
 "use client"
 
-import Image from "next/image";
-import { Card, CardContent } from "../ui/card";
-import { useTransition, type ReactNode } from "react";
-import { Button } from "../ui/button";
-import { useSession } from "next-auth/react";
-import { updateCardQuantityAction } from "@/app/actions/updateCardQuantity.action";
-import { markCollectionUpdated } from "@/lib/utils/collectionSync";
+import Image from "next/image"
+import { Card, CardContent } from "../ui/card"
+import { useTransition, type ReactNode } from "react"
+import { Button } from "../ui/button"
+import { useSession } from "next-auth/react"
+import { updateCardQuantityAction } from "@/app/actions/updateCardQuantity.action"
+import { markCollectionUpdated } from "@/lib/utils/collectionSync"
 
 interface CardTileProps {
     id: string;
@@ -20,15 +20,15 @@ interface CardTileProps {
 }
 
 const CARD_BLUR_PLACEHOLDER =
-    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMzYwJyBoZWlnaHQ9JzUwNCcgdmlld0JveD0nMCAwIDM2MCA1MDQnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzM2MCcgaGVpZ2h0PSc1MDQnIGZpbGw9JyNlNWU3ZWInLz48L3N2Zz4=";
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMzYwJyBoZWlnaHQ9JzUwNCcgdmlld0JveD0nMCAwIDM2MCA1MDQnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzM2MCcgaGVpZ2h0PSc1MDQnIGZpbGw9JyNlNWU3ZWInLz48L3N2Zz4="
 
 export function CardTile(props: CardTileProps) {
-    const imageSrc = props.image || "/card-placeholder.jpg";
+    const imageSrc = props.image || "/card-placeholder.jpg"
     const quantity = props.quantity ?? 0
-    const [, startTransition] = useTransition();
+    const [, startTransition] = useTransition()
 
-    const { data: session } = useSession();
-    const userId = session?.user?.id;
+    const { data: session } = useSession()
+    const userId = session?.user?.id
 
     function onUpdateQuantity(newCardQuantity: number): void {
         startTransition(async () => {
@@ -36,10 +36,10 @@ export function CardTile(props: CardTileProps) {
             if (userId != undefined) {
                 const result = await updateCardQuantityAction(userId, props.id, newCardQuantity)
                 if (result.success) {
-                    markCollectionUpdated();
+                    markCollectionUpdated()
                 }
             }
-        });
+        })
     }
 
     return (
@@ -92,5 +92,5 @@ export function CardTile(props: CardTileProps) {
                 }
             </CardContent>
         </Card>
-    );
+    )
 }

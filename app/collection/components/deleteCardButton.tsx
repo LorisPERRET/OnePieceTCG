@@ -1,21 +1,21 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useTransition } from "react";
-import { deleteCardFromCollectionAction } from "../../actions/deleteCardFromCollection.action";
-import { markCollectionUpdated } from "@/lib/utils/collectionSync";
+import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { useTransition } from "react"
+import { deleteCardFromCollectionAction } from "../../actions/deleteCardFromCollection.action"
+import { markCollectionUpdated } from "@/lib/utils/collectionSync"
 
 interface DeleteCardButtonProps {
     cardId: string;
 }
 
 export function DeleteCardButton(options: DeleteCardButtonProps) {
-    const [, startTransition] = useTransition();
+    const [, startTransition] = useTransition()
 
-    const { data: session } = useSession();
-    const userId = session?.user?.id;
+    const { data: session } = useSession()
+    const userId = session?.user?.id
 
     function onDeleteCard(id: string): void {
         startTransition(async () => {
@@ -23,10 +23,10 @@ export function DeleteCardButton(options: DeleteCardButtonProps) {
             if (userId != undefined) {
                 const result = await deleteCardFromCollectionAction(userId, id)
                 if (result.success) {
-                    markCollectionUpdated();
+                    markCollectionUpdated()
                 }
             }
-        });
+        })
     }
 
     return (
@@ -38,5 +38,5 @@ export function DeleteCardButton(options: DeleteCardButtonProps) {
         >
             <Trash2 className="size-4" />
         </Button>
-    );
+    )
 }

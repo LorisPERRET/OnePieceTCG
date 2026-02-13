@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
-import { Button } from "../ui/button";
-import { LogOut } from "lucide-react";
+import { usePathname } from "next/navigation"
+import { signOut, useSession } from "next-auth/react"
+import { Button } from "../ui/button"
+import { LogOut } from "lucide-react"
 
 export function Footer() {
-    const pathname = usePathname();
-    const { data: session } = useSession();
-    const isAuthPage = pathname.startsWith("/auth");
-    const userLabel = session?.user?.name ?? session?.user?.email ?? "Utilisateur";
+    const pathname = usePathname()
+    const { data: session } = useSession()
+    const isAuthPage = pathname.startsWith("/auth")
+    const userLabel = session?.user?.name ?? session?.user?.email ?? "Utilisateur"
 
     if (isAuthPage) {
-        return null;
+        return null
     }
 
     return (
@@ -34,5 +34,5 @@ export function Footer() {
                 </div>
             </div>
         </footer>
-    );
+    )
 }

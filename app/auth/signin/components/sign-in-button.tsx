@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button"
+import { signIn } from "next-auth/react"
 
 interface SignInButtonProps {
     callbackUrl: string;
@@ -34,5 +34,5 @@ export function SignInButton({ callbackUrl }: SignInButtonProps) {
             </svg>
             Se connecter avec Google
         </Button>
-    );
+    )
 }

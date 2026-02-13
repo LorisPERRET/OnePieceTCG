@@ -1,7 +1,7 @@
-"use server";
+"use server"
 
-import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import prisma from "@/lib/prisma"
+import { revalidatePath } from "next/cache"
 
 export type UpdateCardQuantityResult = {
     success: boolean;
@@ -27,9 +27,9 @@ export async function updateCardQuantity(options: UpdateCardQuantityOption): Pro
                 set: options.quantity,
             },
         },
-    });
+    })
 
-    revalidatePath("/collection");
+    revalidatePath("/collection")
 
-    return { success: true };
+    return { success: true }
 }

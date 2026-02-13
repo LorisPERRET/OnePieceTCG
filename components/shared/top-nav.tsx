@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
 import { Package, ListChecks } from "lucide-react"
-import { ReactNode } from "react";
+import { ReactNode } from "react"
 
 interface NavItem {
     href: string;
@@ -16,21 +16,21 @@ const navItems: NavItem[] = [
     { href: "/cards", label: "Toutes les cartes", icon: <Package className="size-4" /> },
     { href: "/collection", label: "Ma collection", icon: <Package className="size-4" /> },
     { href: "/deck", label: "Deck builder", icon: <ListChecks className="size-4" /> }
-];
+]
 
 export function TopNav() {
-    const pathname = usePathname();
-    const isAuthPage = pathname.startsWith("/auth");
+    const pathname = usePathname()
+    const isAuthPage = pathname.startsWith("/auth")
 
     if (isAuthPage) {
-        return null;
+        return null
     }
 
     const actives = navItems.filter(element => {
         return pathname.startsWith(element.href)
-    });
+    })
 
-    var active = "/cards"
+    let active = "/cards"
     if (actives.length != 0) {
         active = actives[0].href
     }
@@ -50,5 +50,5 @@ export function TopNav() {
                 ))}
             </TabsList>
         </Tabs>
-    );
+    )
 }

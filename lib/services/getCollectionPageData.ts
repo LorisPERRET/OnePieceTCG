@@ -1,7 +1,7 @@
-import prisma from "@/lib/prisma";
-import { normalize } from "@/lib/utils/normalizeString";
-import type { Card } from "@/app/generated/prisma/client";
-import type { CollectionCardWhereInput } from "@/app/generated/prisma/models/CollectionCard";
+import prisma from "@/lib/prisma"
+import { normalize } from "@/lib/utils/normalizeString"
+import type { Card } from "@/app/generated/prisma/client"
+import type { CollectionCardWhereInput } from "@/app/generated/prisma/models/CollectionCard"
 
 export type CollectionCardAndQuantity = {
     card: Card;
@@ -24,11 +24,11 @@ type GetCollectionOptions = {
 };
 
 export async function getCollectionPageData(options: GetCollectionOptions): Promise<GetCollectionResult> {
-    const requestedPage = Math.max(1, options.page ?? 1);
-    const limit = Math.max(1, Math.min(options.limit ?? 100, 500));
-    const skip = (requestedPage - 1) * limit;
-    const query = normalize(options.query?.trim());
-    const userId = options.userId;
+    const requestedPage = Math.max(1, options.page ?? 1)
+    const limit = Math.max(1, Math.min(options.limit ?? 100, 500))
+    const skip = (requestedPage - 1) * limit
+    const query = normalize(options.query?.trim())
+    const userId = options.userId
     const where: CollectionCardWhereInput = {
         userId,
         ...(query
@@ -39,7 +39,7 @@ export async function getCollectionPageData(options: GetCollectionOptions): Prom
                 ]
             }
             : {})
-    };
+    }
 
     const [totalItems, items] = await prisma.$transaction([
         prisma.collectionCard.count({ where }),
@@ -52,14 +52,14 @@ export async function getCollectionPageData(options: GetCollectionOptions): Prom
                 card: true,
             },
         })
-    ]);
+    ])
 
-    const totalPages = Math.max(1, Math.ceil(totalItems / limit));
-    const page = Math.min(requestedPage, totalPages);
+    const totalPages = Math.max(1, Math.ceil(totalItems / limit))
+    const page = Math.min(requestedPage, totalPages)
     const mappedItems: CollectionCardAndQuantity[] = items.map((item) => ({
         card: item.card,
         quantity: item.quantity,
-    }));
+    }))
 
     return {
         page,

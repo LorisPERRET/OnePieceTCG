@@ -1,7 +1,7 @@
-"use server";
+"use server"
 
-import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import prisma from "@/lib/prisma"
+import { revalidatePath } from "next/cache"
 
 export type DeleteCardFromCollectionResult = {
     success: boolean;
@@ -21,9 +21,9 @@ export async function deleteCardFromCollection(options: DeleteCardFromCollection
                 cardId: options.cardId,
             },
         }
-    });
+    })
 
-    revalidatePath("/collections");
+    revalidatePath("/collections")
 
-    return { success: true };
+    return { success: true }
 }

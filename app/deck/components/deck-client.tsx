@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
-import { startTransition, useCallback, useEffect, useState } from "react";
-import { FileText, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DeckCard } from "@/lib/services/parseDeck";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { useSession } from "next-auth/react";
-import { parseDeckAction } from "../../actions/parseDeck.action";
-import { ParsingResult } from "./parsingResult";
-import { ExportDeckListDialog } from "./exportDeckListDialog";
-import { readCollectionUpdatedAt } from "@/lib/utils/collectionSync";
+import { startTransition, useCallback, useEffect, useState } from "react"
+import { FileText, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DeckCard } from "@/lib/services/parseDeck"
+import { Badge } from "@/components/ui/badge"
+import { Textarea } from "@/components/ui/textarea"
+import { useSession } from "next-auth/react"
+import { parseDeckAction } from "../../actions/parseDeck.action"
+import { ParsingResult } from "./parsingResult"
+import { ExportDeckListDialog } from "./exportDeckListDialog"
+import { readCollectionUpdatedAt } from "@/lib/utils/collectionSync"
 
 const SAMPLE_DECK = `Exemple de format:
 
@@ -22,34 +22,34 @@ const SAMPLE_DECK = `Exemple de format:
 4x OP03-112-R - Charlotte Pudding (ST20)
 4x OP03-114-SR - Charlotte Linlin
 4x OP03-107-C - Charlotte Galette
-2x OP11-106-R - Zeus`;
+2x OP11-106-R - Zeus`
 
-const STORAGE_PREFIX = "deck-view-state";
+const STORAGE_PREFIX = "deck-view-state"
 
 function isParsedDeck(value: unknown): value is { leader: DeckCard[]; main: DeckCard[] } {
-    if (!value || typeof value !== "object") return false;
-    const parsed = value as { leader?: unknown; main?: unknown };
-    return Array.isArray(parsed.leader) && Array.isArray(parsed.main);
+    if (!value || typeof value !== "object") return false
+    const parsed = value as { leader?: unknown; main?: unknown }
+    return Array.isArray(parsed.leader) && Array.isArray(parsed.main)
 }
 
 export function DeckClient() {
-    const [decklistInput, setDecklistInput] = useState('');
-    const [parsedDeck, setParsedDeck] = useState<{ leader: DeckCard[], main: DeckCard[] } | null>(null);
-    const [lastAnalyzedAt, setLastAnalyzedAt] = useState<number>(0);
-    const [isStorageHydrated, setIsStorageHydrated] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [decklistInput, setDecklistInput] = useState('')
+    const [parsedDeck, setParsedDeck] = useState<{ leader: DeckCard[], main: DeckCard[] } | null>(null)
+    const [lastAnalyzedAt, setLastAnalyzedAt] = useState<number>(0)
+    const [isStorageHydrated, setIsStorageHydrated] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
-    const { data: session } = useSession();
-    const userId = session?.user?.id;
-    const storageKey = `${STORAGE_PREFIX}:${userId ?? "anonymous"}`;
+    const { data: session } = useSession()
+    const userId = session?.user?.id
+    const storageKey = `${STORAGE_PREFIX}:${userId ?? "anonymous"}`
 
     useEffect(() => {
-        if (!userId) return;
+        if (!userId) return
 
-        const rawState = localStorage.getItem(storageKey);
+        const rawState = localStorage.getItem(storageKey)
         if (!rawState) {
-            setIsStorageHydrated(true);
-            return;
+            setIsStorageHydrated(true)
+            return
         }
 
         try {
@@ -57,68 +57,68 @@ export function DeckClient() {
                 decklistInput?: unknown;
                 parsedDeck?: unknown;
                 lastAnalyzedAt?: unknown;
-            };
+            }
             if (typeof savedState.decklistInput === "string") {
-                setDecklistInput(savedState.decklistInput);
+                setDecklistInput(savedState.decklistInput)
             }
             if (isParsedDeck(savedState.parsedDeck)) {
-                setParsedDeck(savedState.parsedDeck);
+                setParsedDeck(savedState.parsedDeck)
             }
             if (typeof savedState.lastAnalyzedAt === "number" && Number.isFinite(savedState.lastAnalyzedAt)) {
-                setLastAnalyzedAt(savedState.lastAnalyzedAt);
+                setLastAnalyzedAt(savedState.lastAnalyzedAt)
             }
         } catch {
             // Ignore malformed local storage and continue with empty state.
         } finally {
-            setIsStorageHydrated(true);
+            setIsStorageHydrated(true)
         }
-    }, [storageKey, userId]);
+    }, [storageKey, userId])
 
     useEffect(() => {
-        if (!userId || !isStorageHydrated) return;
-        localStorage.setItem(storageKey, JSON.stringify({ decklistInput, parsedDeck, lastAnalyzedAt }));
-    }, [decklistInput, isStorageHydrated, lastAnalyzedAt, parsedDeck, storageKey, userId]);
+        if (!userId || !isStorageHydrated) return
+        localStorage.setItem(storageKey, JSON.stringify({ decklistInput, parsedDeck, lastAnalyzedAt }))
+    }, [decklistInput, isStorageHydrated, lastAnalyzedAt, parsedDeck, storageKey, userId])
 
     const runAnalyze = useCallback(async () => {
-        if (!userId || !decklistInput.trim()) return;
-        setIsLoading(true);
-        const result = await parseDeckAction(decklistInput, userId);
-        setParsedDeck(result);
-        setLastAnalyzedAt(Date.now());
-        setIsLoading(false);
-    }, [decklistInput, userId]);
+        if (!userId || !decklistInput.trim()) return
+        setIsLoading(true)
+        const result = await parseDeckAction(decklistInput, userId)
+        setParsedDeck(result)
+        setLastAnalyzedAt(Date.now())
+        setIsLoading(false)
+    }, [decklistInput, userId])
 
     const handleAnalyze = () => {
         startTransition(async () => {
-            await runAnalyze();
+            await runAnalyze()
         })
-    };
+    }
 
     useEffect(() => {
-        if (!isStorageHydrated || !userId) return;
-        if (!parsedDeck || !decklistInput.trim()) return;
+        if (!isStorageHydrated || !userId) return
+        if (!parsedDeck || !decklistInput.trim()) return
 
-        const collectionUpdatedAt = readCollectionUpdatedAt();
-        if (!collectionUpdatedAt || collectionUpdatedAt <= lastAnalyzedAt) return;
+        const collectionUpdatedAt = readCollectionUpdatedAt()
+        if (!collectionUpdatedAt || collectionUpdatedAt <= lastAnalyzedAt) return
 
         startTransition(async () => {
-            await runAnalyze();
-        });
-    }, [decklistInput, isStorageHydrated, lastAnalyzedAt, parsedDeck, runAnalyze, userId]);
+            await runAnalyze()
+        })
+    }, [decklistInput, isStorageHydrated, lastAnalyzedAt, parsedDeck, runAnalyze, userId])
 
-    const totalOwned = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.owned, 0) : 0;
-    const totalNeeded = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.quantity, 0) : 0;
-    const totalMissing = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.missing, 0) : 0;
-    const completionRate = totalNeeded > 0 ? Math.round((totalOwned / totalNeeded) * 100) : 0;
-    const missingCards = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].filter((card) => card.missing > 0) : [];
+    const totalOwned = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.owned, 0) : 0
+    const totalNeeded = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.quantity, 0) : 0
+    const totalMissing = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.missing, 0) : 0
+    const completionRate = totalNeeded > 0 ? Math.round((totalOwned / totalNeeded) * 100) : 0
+    const missingCards = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].filter((card) => card.missing > 0) : []
 
     const renderCardList = (cards: DeckCard[], title: string) => {
-        if (cards.length === 0) return null;
+        if (cards.length === 0) return null
 
         return (
             <ParsingResult cards={cards} title={title} />
-        );
-    };
+        )
+    }
 
     return (
         <div className="space-y-6">
@@ -198,5 +198,5 @@ export function DeckClient() {
                 </Card>
             )}
         </div>
-    );
+    )
 }

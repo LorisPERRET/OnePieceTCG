@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
-import { auth } from "@/lib/services/auth";
-import { SignInButton } from "@/app/auth/signin/components/sign-in-button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { redirect } from "next/navigation"
+import { auth } from "@/lib/services/auth"
+import { SignInButton } from "@/app/auth/signin/components/sign-in-button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface SignInPageProps {
     searchParams: Promise<{
@@ -12,29 +12,29 @@ interface SignInPageProps {
 
 const toCallbackUrl = (value: string | undefined): string => {
     if (!value) {
-        return "/cards";
+        return "/cards"
     }
 
     if (value.startsWith("/")) {
-        return value;
+        return value
     }
 
     try {
-        const parsed = new URL(value);
-        return `${parsed.pathname}${parsed.search}${parsed.hash}` || "/cards";
+        const parsed = new URL(value)
+        return `${parsed.pathname}${parsed.search}${parsed.hash}` || "/cards"
     } catch {
-        return "/cards";
+        return "/cards"
     }
-};
+}
 
 export default async function SignInPage({ searchParams }: SignInPageProps) {
-    const session = await auth();
+    const session = await auth()
     if (session?.user?.id) {
-        redirect("/cards");
+        redirect("/cards")
     }
 
-    const callbackUrl = toCallbackUrl((await searchParams).callbackUrl);
-    const hasError = Boolean((await searchParams).error);
+    const callbackUrl = toCallbackUrl((await searchParams).callbackUrl)
+    const hasError = Boolean((await searchParams).error)
 
     return (
         <div className="min-h-screen w-full flex items-center justify-center p-4">
@@ -54,5 +54,5 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
                 </CardContent>
             </Card>
         </div>
-    );
+    )
 }

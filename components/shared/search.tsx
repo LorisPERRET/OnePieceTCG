@@ -1,9 +1,9 @@
 "use client"
 
-import { Search } from 'lucide-react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useDebouncedCallback } from 'use-debounce';
-import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { useDebouncedCallback } from 'use-debounce'
+import { Input } from '@/components/ui/input'
 
 export function SearchInput() {
     const params = useSearchParams()
@@ -11,13 +11,13 @@ export function SearchInput() {
 
     const handleQuery = useDebouncedCallback((query: string) => {
         const newParams = new URLSearchParams(params)
-        newParams.set("page", "1");
+        newParams.set("page", "1")
         if (query) {
-            newParams.set('query', query);
+            newParams.set('query', query)
         } else {
-            newParams.delete('query');
+            newParams.delete('query')
         }
-        router.push(`?${newParams.toString()}`);
+        router.push(`?${newParams.toString()}`)
     }, 300)
 
     return (
@@ -33,5 +33,5 @@ export function SearchInput() {
                 />
             </div>
         </div>
-    );
+    )
 }

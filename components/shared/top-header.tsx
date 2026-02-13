@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import { usePathname } from "next/navigation";
+import { usePathname } from "next/navigation"
 
 export function TopHeader() {
-    const pathname = usePathname();
-    const isAuthPage = pathname.startsWith("/auth");
+    const pathname = usePathname()
+    const isAuthPage = pathname.startsWith("/auth")
 
     if (isAuthPage) {
-        return null;
+        return null
     }
 
     return (
@@ -21,5 +21,5 @@ export function TopHeader() {
                 </p>
             </div>
         </header>
-    );
+    )
 }

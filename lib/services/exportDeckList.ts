@@ -1,6 +1,6 @@
-"use server";
+"use server"
 
-import { DeckCard } from "@/lib/services/parseDeck";
+import { DeckCard } from "@/lib/services/parseDeck"
 
 export type ExportDeckListResult = {
     success: boolean;
@@ -21,18 +21,18 @@ function makeContent(
         return {
             success: false,
             error: "Aucune carte manquante a exporter.",
-        };
+        }
     }
 
     const lines = missingCards
         .filter((card) => card.missing > 0)
-        .map((card) => `${card.missing}x ${card.name} ${card.code}`);
+        .map((card) => `${card.missing}x ${card.name} ${card.code}`)
 
     if (!lines.length) {
         return {
             success: false,
             error: "Aucune carte manquante a exporter.",
-        };
+        }
     }
 
     return {
@@ -49,22 +49,22 @@ export async function downloadDeckList(
         return {
             success: false,
             error: result.error ?? "Erreur pendant l'export.",
-        };
+        }
     }
 
-    const blob = new Blob([result.content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "cartes-manquantes.txt";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+    const blob = new Blob([result.content], { type: "text/plain;charset=utf-8" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = "cartes-manquantes.txt"
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
 
     return {
         success: true,
-    };
+    }
 }
 
 export async function copyDeckList(
@@ -75,20 +75,20 @@ export async function copyDeckList(
         return {
             success: false,
             error: result.error ?? "Erreur pendant l'export.",
-        };
+        }
     }
 
     try {
-        await navigator.clipboard.writeText(result.content);
+        await navigator.clipboard.writeText(result.content)
 
         return {
             success: true,
             feedback: "Copié"
-        };
+        }
     } catch {
         return {
             success: true,
             error: "Échec de copie"
-        };
+        }
     }
 }
