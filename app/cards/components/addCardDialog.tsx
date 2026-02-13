@@ -1,9 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { markCollectionUpdated } from "@/lib/utils/collectionSync";
 import { Minus, Plus, X } from "lucide-react";
 import { useState, useTransition } from "react";
-import { addCardToCollectionAction } from "../actions/addCardToCollection.action";
+import { addCardToCollectionAction } from "../../actions/addCardToCollection.action";
 import { useSession } from "next-auth/react";
 
 interface AddCardDialogProps {
@@ -60,6 +61,7 @@ export function AddCardDialog({ cardId }: AddCardDialogProps) {
             if (userId != undefined && isQuantityValid) {
                 const result = await addCardToCollectionAction(userId, cardId, Number(quantity))
                 if (result.success) {
+                    markCollectionUpdated();
                     close()
                 } else {
                     setError("Une erreur est survenu !")
@@ -136,9 +138,9 @@ export function AddCardDialog({ cardId }: AddCardDialogProps) {
                                 style={
                                     isError
                                         ? {
-                                                borderColor: "#ef4444",
-                                                boxShadow: "0 0 0 1px #ef4444",
-                                            }
+                                            borderColor: "#ef4444",
+                                            boxShadow: "0 0 0 1px #ef4444",
+                                        }
                                         : undefined
                                 }
                             />

@@ -1,4 +1,4 @@
-import { DeckClient } from "@/app/deck/deck-client";
+import { DeckClient } from "@/app/deck/components/deck-client";
 import { auth } from "@/lib/services/auth";
 import { redirect } from "next/navigation";
 
@@ -10,5 +10,5 @@ export default async function DeckPage() {
         redirect("/auth/signin");
     }
 
-    return <DeckClient  />;
+    return <DeckClient />;
 }

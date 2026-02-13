@@ -5,5 +5,5 @@ export async function updateCardQuantityAction(
     cardId: string,
     quantity: number
 ): Promise<UpdateCardQuantityResult> {
-    return updateCardQuantity({userId, cardId, quantity});
+    return updateCardQuantity({ userId, cardId, quantity });
 }

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/services/auth";
-import { SignInButton } from "@/app/auth/signin/sign-in-button";
+import { SignInButton } from "@/app/auth/signin/components/sign-in-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface SignInPageProps {

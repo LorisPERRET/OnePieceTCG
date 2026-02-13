@@ -77,7 +77,7 @@ export async function copyDeckList(
             error: result.error ?? "Erreur pendant l'export.",
         };
     }
-    
+
     try {
         await navigator.clipboard.writeText(result.content);
 

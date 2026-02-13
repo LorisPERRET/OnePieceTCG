@@ -18,7 +18,7 @@ export function Pagination({
     totalItems,
     pageSize
 }: PaginationProps) {
-    
+
     const params = useSearchParams()
 
     const previousPage = page <= 1 ? 1 : page - 1
@@ -53,77 +53,77 @@ export function Pagination({
 
             <nav className="pager" aria-label="Pagination">
                 <Button
-                        variant="outline"
-                        className="pager-link lg:flex"
-                        disabled={!canGoFirst}
-                        asChild
+                    variant="outline"
+                    className="pager-link lg:flex"
+                    disabled={!canGoFirst}
+                    asChild
+                >
+                    <Link href={getParams(params, 'page', '1')}>
+                        <ChevronsLeftIcon className="size-4" />
+                    </Link>
+                </Button>
+
+                <Button
+                    variant="outline"
+                    className="pager-link"
+                    disabled={!canGoPrevious}
+                    asChild
+                >
+                    <Link href={getParams(params, 'page', previousPage.toString())}>
+                        <ChevronLeftIcon className="size-4" />
+                    </Link>
+                </Button>
+
+                {windowStart > 1 && (
+                    <>
+                        <Link href={getParams(params, 'page', '1')} className="pager-link">
+                            1
+                        </Link>
+                        {windowStart > 2 ? <span className="pager-ellipsis">...</span> : null}
+                    </>
+                )}
+
+                {pages.map((pageNumber) => (
+                    <Link
+                        key={pageNumber}
+                        href={getParams(params, 'page', pageNumber.toString())}
+                        className={`pager-link ${pageNumber === page ? "is-active" : ""}`}
+                        aria-current={pageNumber === page ? "page" : undefined}
                     >
-                        <Link href={getParams(params, 'page', '1')}>
-                            <ChevronsLeftIcon className="size-4" />
-                        </Link>
-                    </Button>
+                        {pageNumber}
+                    </Link>
+                ))}
 
-                    <Button
-                        variant="outline"
-                        className="pager-link"
-                        disabled={!canGoPrevious}
-                        asChild
-                    >
-                        <Link href={getParams(params, 'page', previousPage.toString())}>
-                            <ChevronLeftIcon className="size-4" />
+                {windowEnd < lastPage && (
+                    <>
+                        {windowEnd < lastPage - 1 ? <span className="pager-ellipsis">...</span> : null}
+                        <Link href={getParams(params, 'page', lastPage.toString())} className="pager-link">
+                            {lastPage}
                         </Link>
-                    </Button>
+                    </>
+                )}
 
-                    {windowStart > 1 && (
-                        <>
-                            <Link href={getParams(params, 'page', '1')} className="pager-link">
-                                1
-                            </Link>
-                            {windowStart > 2 ? <span className="pager-ellipsis">...</span> : null}
-                        </>
-                    )}
+                <Button
+                    variant="outline"
+                    className="pager-link"
+                    disabled={!canGoNext}
+                    asChild
+                >
+                    <Link href={getParams(params, 'page', nextPage.toString())}>
+                        <ChevronRightIcon className="size-4" />
+                    </Link>
+                </Button>
 
-                    {pages.map((pageNumber) => (
-                        <Link
-                            key={pageNumber}
-                            href={getParams(params, 'page', pageNumber.toString())}
-                            className={`pager-link ${pageNumber === page ? "is-active" : ""}`}
-                            aria-current={pageNumber === page ? "page" : undefined}
-                        >
-                            {pageNumber}
-                        </Link>
-                    ))}
-
-                    {windowEnd < lastPage && (
-                        <>
-                            {windowEnd < lastPage - 1 ? <span className="pager-ellipsis">...</span> : null}
-                            <Link href={getParams(params, 'page', lastPage.toString())} className="pager-link">
-                                {lastPage}
-                            </Link>
-                        </>
-                    )}
-
-                    <Button
-                        variant="outline"
-                        className="pager-link"
-                        disabled={!canGoNext}
-                        asChild
-                    >
-                        <Link href={getParams(params, 'page', nextPage.toString())}>
-                            <ChevronRightIcon className="size-4" />
-                        </Link>
-                    </Button>
-                    
-                    <Button
-                        variant="outline"
-                        className="pager-link lg:flex"
-                        disabled={!canGoLast}
-                        asChild
-                    >
-                        <Link href={getParams(params, 'page', lastPage.toString())}>
-                            <ChevronsRightIcon className="size-4" />
-                        </Link>
-                    </Button>
+                <Button
+                    variant="outline"
+                    className="pager-link lg:flex"
+                    disabled={!canGoLast}
+                    asChild
+                >
+                    <Link href={getParams(params, 'page', lastPage.toString())}>
+                        <ChevronsRightIcon className="size-4" />
+                    </Link>
+                </Button>
             </nav>
         </div>
     );

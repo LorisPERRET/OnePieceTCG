@@ -14,8 +14,8 @@ export type DeckCard = {
 }
 
 export type ParseDeckResult = {
-        leader: DeckCard[];
-        main: DeckCard[];
+    leader: DeckCard[];
+    main: DeckCard[];
 }
 
 function normalizeCardCode(rawCode: string): string {
@@ -33,80 +33,80 @@ function normalizeCardCode(rawCode: string): string {
 }
 
 export async function parseDeck(input: string, userId: string): Promise<ParseDeckResult> {
-        const lines = input.split('\n');
-        const leader: DeckCard[] = [];
-        const main: DeckCard[] = [];
-        let currentSection: 'leader' | 'main' | null = null;
+    const lines = input.split('\n');
+    const leader: DeckCard[] = [];
+    const main: DeckCard[] = [];
+    let currentSection: 'leader' | 'main' | null = null;
 
-        for (const line of lines) {
-            const trimmedLine = line.trim();
-            
-            // Détecter les sections
-            if (trimmedLine.toUpperCase().includes('// LEADER')) {
-                currentSection = 'leader';
-                continue;
-            } else if (trimmedLine.toUpperCase().includes('// MAIN')) {
-                currentSection = 'main';
-                continue;
-            }
+    for (const line of lines) {
+        const trimmedLine = line.trim();
 
-            // Ignorer les lignes vides ou de commentaire seules
-            if (!trimmedLine || trimmedLine.startsWith('//')) {
-                continue;
-            }
-
-            // Parser les cartes avec regex flexible
-            // Format: 4x OP03-112-R - Charlotte Pudding (ST20)
-            const match = trimmedLine.match(/^(\d+)x\s+([A-Z0-9-]+)\s*-?\s*(.+?)(?:\(.*?\))?$/i);
-            
-            if (match) {
-                const quantity = parseInt(match[1]);
-                const code = normalizeCardCode(match[2]);
-                const name = match[3].trim();
-
-                // Trouver dans la collection
-                const ownedCard: CollectionCardAndQuantity[] = await prisma.collectionCard.findMany({
-                        where: {
-                                userId,
-                                card: {
-                                code: {
-                                        equals: code,
-                                        mode: "insensitive",
-                                },
-                                },
-                        },
-                        include: {
-                                card: true,
-                        },
-                });
-
-                // Trouver dans la collection
-                const cards: Card[] = await prisma.card.findMany({
-                        where: {
-                                code
-                        }
-                });
-
-                const ownedQuantity = ownedCard.reduce((sum, card) => sum + card.quantity, 0);
-                const owned = ownedCard ? Math.min(ownedQuantity, quantity) : 0;
-                const missing = Math.max(0, quantity - owned);
-
-                const deckCard: DeckCard = {
-                    quantity,
-                    code,
-                    name: cards[0]?.name ?? name,
-                    owned: ownedQuantity,
-                    images: cards.map((card) => (card.image)),
-                    missing
-                };
-
-                if (currentSection === 'leader') {
-                    leader.push(deckCard);
-                } else if (currentSection === 'main') {
-                    main.push(deckCard);
-                }
-            }
+        // Détecter les sections
+        if (trimmedLine.toUpperCase().includes('// LEADER')) {
+            currentSection = 'leader';
+            continue;
+        } else if (trimmedLine.toUpperCase().includes('// MAIN')) {
+            currentSection = 'main';
+            continue;
         }
 
-        return { leader, main };
-    };
+        // Ignorer les lignes vides ou de commentaire seules
+        if (!trimmedLine || trimmedLine.startsWith('//')) {
+            continue;
+        }
+
+        // Parser les cartes avec regex flexible
+        // Format: 4x OP03-112-R - Charlotte Pudding (ST20)
+        const match = trimmedLine.match(/^(\d+)x\s+([A-Z0-9-]+)\s*-?\s*(.+?)(?:\(.*?\))?$/i);
+
+        if (match) {
+            const quantity = parseInt(match[1]);
+            const code = normalizeCardCode(match[2]);
+            const name = match[3].trim();
+
+            // Trouver dans la collection
+            const ownedCard: CollectionCardAndQuantity[] = await prisma.collectionCard.findMany({
+                where: {
+                    userId,
+                    card: {
+                        code: {
+                            equals: code,
+                            mode: "insensitive",
+                        },
+                    },
+                },
+                include: {
+                    card: true,
+                },
+            });
+
+            // Trouver dans la collection
+            const cards: Card[] = await prisma.card.findMany({
+                where: {
+                    code
+                }
+            });
+
+            const ownedQuantity = ownedCard.reduce((sum, card) => sum + card.quantity, 0);
+            const owned = ownedCard ? Math.min(ownedQuantity, quantity) : 0;
+            const missing = Math.max(0, quantity - owned);
+
+            const deckCard: DeckCard = {
+                quantity,
+                code,
+                name: cards[0]?.name ?? name,
+                owned: ownedQuantity,
+                images: cards.map((card) => (card.image)),
+                missing
+            };
+
+            if (currentSection === 'leader') {
+                leader.push(deckCard);
+            } else if (currentSection === 'main') {
+                main.push(deckCard);
+            }
+        }
+    }
+
+    return { leader, main };
+};

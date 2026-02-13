@@ -4,8 +4,8 @@ import type { Card } from "@/app/generated/prisma/client";
 import type { CollectionCardWhereInput } from "@/app/generated/prisma/models/CollectionCard";
 
 export type CollectionCardAndQuantity = {
-        card: Card;
-        quantity: number;
+    card: Card;
+    quantity: number;
 }
 
 export type GetCollectionResult = {
@@ -33,11 +33,11 @@ export async function getCollectionPageData(options: GetCollectionOptions): Prom
         userId,
         ...(query
             ? {
-                    OR: [
-                        { card: { code: { contains: query, mode: "insensitive" } } },
-                        { card: { name: { contains: query, mode: "insensitive" } } }
-                    ]
-                }
+                OR: [
+                    { card: { code: { contains: query, mode: "insensitive" } } },
+                    { card: { name: { contains: query, mode: "insensitive" } } }
+                ]
+            }
             : {})
     };
 

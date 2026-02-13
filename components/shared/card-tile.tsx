@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { Card, CardContent } from "../ui/card";
-import { useState, useTransition, type ReactNode } from "react";
+import { useTransition, type ReactNode } from "react";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { updateCardQuantityAction } from "@/app/actions/updateCardQuantity.action";
+import { markCollectionUpdated } from "@/lib/utils/collectionSync";
 
 interface CardTileProps {
     id: string;
@@ -18,19 +19,25 @@ interface CardTileProps {
     action?: ReactNode;
 }
 
+const CARD_BLUR_PLACEHOLDER =
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMzYwJyBoZWlnaHQ9JzUwNCcgdmlld0JveD0nMCAwIDM2MCA1MDQnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzM2MCcgaGVpZ2h0PSc1MDQnIGZpbGw9JyNlNWU3ZWInLz48L3N2Zz4=";
+
 export function CardTile(props: CardTileProps) {
     const imageSrc = props.image || "/card-placeholder.jpg";
     const quantity = props.quantity ?? 0
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
     const { data: session } = useSession();
     const userId = session?.user?.id;
 
     function onUpdateQuantity(newCardQuantity: number): void {
         startTransition(async () => {
-        
+
             if (userId != undefined) {
-                await updateCardQuantityAction(userId, props.id, newCardQuantity)
+                const result = await updateCardQuantityAction(userId, props.id, newCardQuantity)
+                if (result.success) {
+                    markCollectionUpdated();
+                }
             }
         });
     }
@@ -45,16 +52,16 @@ export function CardTile(props: CardTileProps) {
                     </div>
                     {props.action ? <div className="shrink-0">{props.action}</div> : null}
                 </div>
-                <div className="w-full overflow-hidden rounded-m pt-4">
-                    <Image 
-                        src={imageSrc} 
-                        alt={props.name} 
+                <div className="w-full overflow-hidden rounded-md pt-4">
+                    <Image
+                        src={imageSrc}
+                        alt={props.name}
                         className="h-full w-full object-cover"
-                        width={0}
-                        height={0}
-                        sizes="100vw"
+                        width={360}
+                        height={504}
+                        sizes="(max-width: 768px) 100vw, 320px"
                         placeholder="blur"
-                        blurDataURL="/card-placeholder.jpg"
+                        blurDataURL={CARD_BLUR_PLACEHOLDER}
                     />
                 </div>
                 {quantity !== 0 ? (
@@ -81,7 +88,7 @@ export function CardTile(props: CardTileProps) {
                             +
                         </Button>
                     </div>
-                    ) : null
+                ) : null
                 }
             </CardContent>
         </Card>

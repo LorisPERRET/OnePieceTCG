@@ -4,5 +4,5 @@ export async function deleteCardFromCollectionAction(
     userId: string,
     cardId: string
 ): Promise<DeleteCardFromCollectionResult> {
-    return deleteCardFromCollection({userId, cardId});
+    return deleteCardFromCollection({ userId, cardId });
 }

@@ -24,11 +24,11 @@ export async function getCardsPageData(options: GetCardsOptions = {}): Promise<G
     const query = normalize(options.query?.trim());
     const where: CardWhereInput | undefined = query
         ? {
-                OR: [
-                    { name: { contains: query, mode: "insensitive" } },
-                    { code: { contains: query, mode: "insensitive" } },
-                ],
-            }
+            OR: [
+                { name: { contains: query, mode: "insensitive" } },
+                { code: { contains: query, mode: "insensitive" } },
+            ],
+        }
         : undefined;
 
     const [totalItems, items] = await Promise.all([

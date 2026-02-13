@@ -5,5 +5,5 @@ export async function addCardToCollectionAction(
     cardId: string,
     quantity: number
 ): Promise<AddCardToCollectionResult> {
-    return addCardToCollection({userId, cardId, quantity});
+    return addCardToCollection({ userId, cardId, quantity });
 }

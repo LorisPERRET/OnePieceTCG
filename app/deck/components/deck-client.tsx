@@ -1,16 +1,17 @@
 "use client";
 
-import { startTransition, useEffect, useState } from "react";
-import { FileText, X } from 'lucide-react';
+import { startTransition, useCallback, useEffect, useState } from "react";
+import { FileText, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DeckCard } from "@/lib/services/parseDeck";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
-import { parseDeckAction } from "../actions/parseDeck.action";
+import { parseDeckAction } from "../../actions/parseDeck.action";
 import { ParsingResult } from "./parsingResult";
 import { ExportDeckListDialog } from "./exportDeckListDialog";
+import { readCollectionUpdatedAt } from "@/lib/utils/collectionSync";
 
 const SAMPLE_DECK = `Exemple de format:
 
@@ -34,8 +35,10 @@ function isParsedDeck(value: unknown): value is { leader: DeckCard[]; main: Deck
 export function DeckClient() {
     const [decklistInput, setDecklistInput] = useState('');
     const [parsedDeck, setParsedDeck] = useState<{ leader: DeckCard[], main: DeckCard[] } | null>(null);
+    const [lastAnalyzedAt, setLastAnalyzedAt] = useState<number>(0);
     const [isStorageHydrated, setIsStorageHydrated] = useState(false);
-    
+    const [isLoading, setIsLoading] = useState(false);
+
     const { data: session } = useSession();
     const userId = session?.user?.id;
     const storageKey = `${STORAGE_PREFIX}:${userId ?? "anonymous"}`;
@@ -50,12 +53,19 @@ export function DeckClient() {
         }
 
         try {
-            const savedState = JSON.parse(rawState) as { decklistInput?: unknown; parsedDeck?: unknown };
+            const savedState = JSON.parse(rawState) as {
+                decklistInput?: unknown;
+                parsedDeck?: unknown;
+                lastAnalyzedAt?: unknown;
+            };
             if (typeof savedState.decklistInput === "string") {
                 setDecklistInput(savedState.decklistInput);
             }
             if (isParsedDeck(savedState.parsedDeck)) {
                 setParsedDeck(savedState.parsedDeck);
+            }
+            if (typeof savedState.lastAnalyzedAt === "number" && Number.isFinite(savedState.lastAnalyzedAt)) {
+                setLastAnalyzedAt(savedState.lastAnalyzedAt);
             }
         } catch {
             // Ignore malformed local storage and continue with empty state.
@@ -66,17 +76,35 @@ export function DeckClient() {
 
     useEffect(() => {
         if (!userId || !isStorageHydrated) return;
-        localStorage.setItem(storageKey, JSON.stringify({ decklistInput, parsedDeck }));
-    }, [decklistInput, isStorageHydrated, parsedDeck, storageKey, userId]);
+        localStorage.setItem(storageKey, JSON.stringify({ decklistInput, parsedDeck, lastAnalyzedAt }));
+    }, [decklistInput, isStorageHydrated, lastAnalyzedAt, parsedDeck, storageKey, userId]);
+
+    const runAnalyze = useCallback(async () => {
+        if (!userId || !decklistInput.trim()) return;
+        setIsLoading(true);
+        const result = await parseDeckAction(decklistInput, userId);
+        setParsedDeck(result);
+        setLastAnalyzedAt(Date.now());
+        setIsLoading(false);
+    }, [decklistInput, userId]);
 
     const handleAnalyze = () => {
         startTransition(async () => {
-            if (userId != undefined) {
-                const result = await parseDeckAction(decklistInput, userId);
-                setParsedDeck(result);
-            }
+            await runAnalyze();
         })
     };
+
+    useEffect(() => {
+        if (!isStorageHydrated || !userId) return;
+        if (!parsedDeck || !decklistInput.trim()) return;
+
+        const collectionUpdatedAt = readCollectionUpdatedAt();
+        if (!collectionUpdatedAt || collectionUpdatedAt <= lastAnalyzedAt) return;
+
+        startTransition(async () => {
+            await runAnalyze();
+        });
+    }, [decklistInput, isStorageHydrated, lastAnalyzedAt, parsedDeck, runAnalyze, userId]);
 
     const totalOwned = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.owned, 0) : 0;
     const totalNeeded = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.quantity, 0) : 0;
@@ -91,7 +119,7 @@ export function DeckClient() {
             <ParsingResult cards={cards} title={title} />
         );
     };
-    
+
     return (
         <div className="space-y-6">
             <div className="space-y-3">
@@ -111,8 +139,14 @@ export function DeckClient() {
                     onChange={(e) => setDecklistInput(e.target.value)}
                     className="min-h-[300px] font-mono text-sm"
                 />
-                <Button onClick={handleAnalyze} className="w-full" disabled={!decklistInput.trim()}>
-                    Analyser le deck
+                <Button onClick={handleAnalyze} className="w-full" disabled={!decklistInput.trim() || isLoading}>
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="size-4 mr-2 animate-spin" />
+                        </>
+                    ) : (
+                        'Analyser le deck'
+                    )}
                 </Button>
             </div>
 
