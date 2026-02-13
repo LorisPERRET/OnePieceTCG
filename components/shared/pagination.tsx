@@ -124,47 +124,6 @@ export function Pagination({
               <ChevronsRightIcon className="size-4" />
             </Link>
           </Button>
-
-        {/* <Link href={buildHref(Math.max(page - 1, 1))} className="pager-link" aria-disabled={page === 1}>
-          Prec.
-        </Link>
-
-        {windowStart > 1 && (
-          <>
-            <Link href={buildHref(1)} className="pager-link">
-              1
-            </Link>
-            {windowStart > 2 ? <span className="pager-ellipsis">...</span> : null}
-          </>
-        )}
-
-        {pages.map((pageNumber) => (
-          <Link
-            key={pageNumber}
-            href={buildHref(pageNumber)}
-            className={`pager-link ${pageNumber === page ? "is-active" : ""}`}
-            aria-current={pageNumber === page ? "page" : undefined}
-          >
-            {pageNumber}
-          </Link>
-        ))}
-
-        {windowEnd < totalPages && (
-          <>
-            {windowEnd < totalPages - 1 ? <span className="pager-ellipsis">...</span> : null}
-            <Link href={buildHref(totalPages)} className="pager-link">
-              {totalPages}
-            </Link>
-          </>
-        )}
-
-        <Link
-          href={buildHref(Math.min(page + 1, totalPages))}
-          className="pager-link"
-          aria-disabled={page === totalPages}
-        >
-          Suiv.
-        </Link> */}
       </nav>
     </div>
   );

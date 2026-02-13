@@ -3,7 +3,7 @@ import { normalize } from "@/lib/utils/normalizeString";
 import type { Card } from "@/app/generated/prisma/client";
 import type { CollectionCardWhereInput } from "@/app/generated/prisma/models/CollectionCard";
 
-type CollectionCardAndQuantity = {
+export type CollectionCardAndQuantity = {
     card: Card;
     quantity: number;
 }

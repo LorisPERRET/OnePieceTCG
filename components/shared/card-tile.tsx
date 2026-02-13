@@ -53,6 +53,8 @@ export function CardTile(props: CardTileProps) {
             width={0}
             height={0}
             sizes="100vw"
+            placeholder="blur"
+            blurDataURL="/card-placeholder.jpg"
           />
         </div>
         {quantity !== 0 ? (
