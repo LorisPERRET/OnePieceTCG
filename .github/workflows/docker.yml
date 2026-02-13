@@ -50,6 +50,9 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Generate Prisma client
+              run: npx prisma generate
+
             - name: Verify build
               run: npm run build
 
@@ -70,13 +73,16 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Generate Prisma client
+              run: npx prisma generate
+
             - name: Run tests (if configured)
               run: npm run test --if-present
 
     lint:
         name: Lint
         runs-on: ubuntu-latest
-        needs: test
+        needs: compile
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -90,13 +96,16 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Generate Prisma client
+              run: npx prisma generate
+
             - name: Lint code
               run: npm run lint
 
     manual_image_build:
         name: Manual image build
         runs-on: ubuntu-latest
-        needs: lint
+        needs: test
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_image_build }}
         outputs:
             image_ref: ${{ steps.export_image.outputs.image_ref }}
