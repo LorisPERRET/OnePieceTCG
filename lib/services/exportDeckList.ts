@@ -1,4 +1,4 @@
-"use server"
+"use client"
 
 import { DeckCard } from "@/lib/services/parseDeck"
 
@@ -87,7 +87,7 @@ export async function copyDeckList(
         }
     } catch {
         return {
-            success: true,
+            success: false,
             error: "Échec de copie"
         }
     }
