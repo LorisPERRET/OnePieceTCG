@@ -13,6 +13,8 @@ RUN npm ci
 FROM node:20-alpine AS builder
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
+ARG NEXTAUTH_SECRET
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -38,6 +40,8 @@ COPY package*.json ./
 COPY prisma ./prisma
 COPY prisma.config.ts ./prisma.config.ts
 COPY scripts/sync-cards.ts ./scripts/sync-cards.ts
+COPY --from=builder /app/lib/prisma.ts ./lib/prisma.ts
+COPY --from=builder /app/app/generated/prisma ./app/generated/prisma
 
 # 2) on installe les deps (prisma CLI inclus) dans le runner
 # (si prisma est en devDependencies, ça ne sera pas installé en prod → important, voir note)

@@ -2,7 +2,7 @@
 
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from "lucide-react"
 import Link from "next/link"
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { Button } from "../ui/button"
 import { getParams } from "@/lib/utils/getParams"
 import { range } from "@/lib/utils/range"
