@@ -54,7 +54,7 @@ jobs:
               run: npm ci
 
             - name: Generate Prisma client
-              run: npx prisma@7.3.0 generate
+              run: npx prisma generate
 
             - name: Verify build
               run: npm run build
@@ -80,7 +80,7 @@ jobs:
               run: npm ci
 
             - name: Generate Prisma client
-              run: npx prisma@7.3.0 generate
+              run: npx prisma generate
 
             - name: Run tests (if configured)
               run: npm run test --if-present
@@ -106,7 +106,7 @@ jobs:
               run: npm ci
 
             - name: Generate Prisma client
-              run: npx prisma@7.3.0 generate
+              run: npx prisma generate
 
             - name: Lint code
               run: npm run lint
