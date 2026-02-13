@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
+import { validateCardId, validateQuantity } from "../utils/collectionValidation"
 
 export type AddCardToCollectionResult = {
     success: boolean;
@@ -15,6 +16,16 @@ type AddCardToCollectionOption = {
 };
 
 export async function addCardToCollection(options: AddCardToCollectionOption): Promise<AddCardToCollectionResult> {
+    const cardIdError = validateCardId(options.cardId)
+    if (cardIdError) {
+        return { success: false, error: cardIdError }
+    }
+
+    const quantityError = validateQuantity(options.quantity)
+    if (quantityError) {
+        return { success: false, error: quantityError }
+    }
+
     await prisma.collectionCard.upsert({
         where: {
             userId_cardId: {

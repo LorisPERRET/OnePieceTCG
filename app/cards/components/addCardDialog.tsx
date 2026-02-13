@@ -5,7 +5,6 @@ import { markCollectionUpdated } from "@/lib/utils/collectionSync"
 import { Minus, Plus, X } from "lucide-react"
 import { useState, useTransition } from "react"
 import { addCardToCollectionAction } from "../../actions/addCardToCollection.action"
-import { useSession } from "next-auth/react"
 
 interface AddCardDialogProps {
     cardId: string;
@@ -16,9 +15,6 @@ export function AddCardDialog({ cardId }: AddCardDialogProps) {
     const [quantity, setQuantity] = useState("1")
     const [isPending, startTransition] = useTransition()
     const [error, setError] = useState("")
-
-    const { data: session } = useSession()
-    const userId = session?.user?.id
 
     const getQuantityError = (value: string) => {
         if (value.trim() === "") {
@@ -58,13 +54,13 @@ export function AddCardDialog({ cardId }: AddCardDialogProps) {
     const addCard = () => {
         startTransition(async () => {
 
-            if (userId != undefined && isQuantityValid) {
-                const result = await addCardToCollectionAction(userId, cardId, Number(quantity))
+            if (isQuantityValid) {
+                const result = await addCardToCollectionAction(cardId, Number(quantity))
                 if (result.success) {
                     markCollectionUpdated()
                     close()
                 } else {
-                    setError("Une erreur est survenu !")
+                    setError(result.error ?? "Une erreur est survenu !")
                 }
             }
         })

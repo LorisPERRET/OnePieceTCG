@@ -1,8 +1,15 @@
+"use server"
+
 import { deleteCardFromCollection, DeleteCardFromCollectionResult } from "@/lib/services/deleteCardFromCollection"
+import { auth } from "@/lib/services/auth"
 
 export async function deleteCardFromCollectionAction(
-    userId: string,
     cardId: string
 ): Promise<DeleteCardFromCollectionResult> {
-    return deleteCardFromCollection({ userId, cardId })
+    const session = await auth()
+    if (!session?.user?.id) {
+        return { success: false, error: "Unauthorized" }
+    }
+
+    return deleteCardFromCollection({ userId: session.user.id, cardId })
 }

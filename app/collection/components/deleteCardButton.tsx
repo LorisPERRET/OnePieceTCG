@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { Trash2, X } from "lucide-react"
-import { useSession } from "next-auth/react"
 import { useState, useTransition } from "react"
 import { deleteCardFromCollectionAction } from "../../actions/deleteCardFromCollection.action"
 import { markCollectionUpdated } from "@/lib/utils/collectionSync"
@@ -16,17 +15,12 @@ export function DeleteCardButton(options: DeleteCardButtonProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
 
-    const { data: session } = useSession()
-    const userId = session?.user?.id
-
     function onDeleteCard(id: string): void {
         startTransition(async () => {
-            if (userId != undefined) {
-                const result = await deleteCardFromCollectionAction(userId, id)
-                if (result.success) {
-                    setIsOpen(false)
-                    markCollectionUpdated()
-                }
+            const result = await deleteCardFromCollectionAction(id)
+            if (result.success) {
+                setIsOpen(false)
+                markCollectionUpdated()
             }
         })
     }

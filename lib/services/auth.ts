@@ -4,9 +4,15 @@ import { getServerSession } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import prisma from "@/lib/prisma"
 
+const nextAuthSecret = process.env.NEXTAUTH_SECRET
+
+if (process.env.NODE_ENV === "production" && !nextAuthSecret) {
+    throw new Error("Missing NEXTAUTH_SECRET in production")
+}
+
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
-    secret: process.env.NEXTAUTH_SECRET ?? "dev-only-secret-change-me",
+    secret: nextAuthSecret,
     session: {
         strategy: "jwt"
     },

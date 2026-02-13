@@ -82,7 +82,7 @@ export function DeckClient() {
     const runAnalyze = useCallback(async () => {
         if (!userId || !decklistInput.trim()) return
         setIsLoading(true)
-        const result = await parseDeckAction(decklistInput, userId)
+        const result = await parseDeckAction(decklistInput)
         setParsedDeck(result)
         setLastAnalyzedAt(Date.now())
         setIsLoading(false)

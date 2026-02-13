@@ -4,7 +4,6 @@ import Image from "next/image"
 import { Card, CardContent } from "../ui/card"
 import { useTransition, type ReactNode } from "react"
 import { Button } from "../ui/button"
-import { useSession } from "next-auth/react"
 import { updateCardQuantityAction } from "@/app/actions/updateCardQuantity.action"
 import { markCollectionUpdated } from "@/lib/utils/collectionSync"
 
@@ -27,17 +26,11 @@ export function CardTile(props: CardTileProps) {
     const quantity = props.quantity ?? 0
     const [, startTransition] = useTransition()
 
-    const { data: session } = useSession()
-    const userId = session?.user?.id
-
     function onUpdateQuantity(newCardQuantity: number): void {
         startTransition(async () => {
-
-            if (userId != undefined) {
-                const result = await updateCardQuantityAction(userId, props.id, newCardQuantity)
-                if (result.success) {
-                    markCollectionUpdated()
-                }
+            const result = await updateCardQuantityAction(props.id, newCardQuantity)
+            if (result.success) {
+                markCollectionUpdated()
             }
         })
     }

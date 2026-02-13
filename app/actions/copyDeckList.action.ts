@@ -1,3 +1,5 @@
+"use server"
+
 import { DeckCard } from "@/lib/services/parseDeck"
 import {
     copyDeckList,

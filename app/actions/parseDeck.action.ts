@@ -1,8 +1,15 @@
+"use server"
+
 import { parseDeck, ParseDeckResult } from "@/lib/services/parseDeck"
+import { auth } from "@/lib/services/auth"
 
 export async function parseDeckAction(
-    input: string,
-    userId: string
+    input: string
 ): Promise<ParseDeckResult> {
-    return parseDeck(input, userId)
+    const session = await auth()
+    if (!session?.user?.id) {
+        return { leader: [], main: [] }
+    }
+
+    return parseDeck(input, session.user.id)
 }
