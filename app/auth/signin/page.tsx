@@ -43,7 +43,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
                     <div className="mx-auto text-6xl">🏴‍☠️</div>
                     <CardTitle className="text-3xl">One Piece Card Manager</CardTitle>
                     <CardDescription className="text-base">
-                        Pour accéder à l'application, connectez-vous avec votre compte Google
+                        Pour accéder à l&apos;application, connectez-vous avec votre compte Google
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
