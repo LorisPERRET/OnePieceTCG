@@ -1,57 +1,165 @@
-name: Build & Push Docker image
+name: CI + Manual Image Pipeline
 
 on:
-  push:
-    branches: [ "main" ]
-    tags: [ "v*" ]
+    push:
+        branches: ["main", "develop", "ci*"]
+    pull_request:
+    workflow_dispatch:
+        inputs:
+            run_image_build:
+                description: "Build/push Docker image"
+                required: true
+                default: false
+                type: boolean
+            run_image_deploy:
+                description: "Deploy Docker image (after build)"
+                required: true
+                default: false
+                type: boolean
+            deploy_environment:
+                description: "Target environment"
+                required: true
+                default: "staging"
+                type: choice
+                options:
+                    - staging
+                    - production
 
 permissions:
-  contents: read
-  packages: write
+    contents: read
+    packages: write
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }} # ex: loris/onepiecetcg
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
+    compile:
+        name: Compile
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3
+            - name: Verify build
+              run: npm run build
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        needs: compile
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Extract Docker metadata (tags/labels)
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,format=short
-            type=ref,event=tag
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
 
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run tests (if configured)
+              run: npm run test --if-present
+
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+        needs: test
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Lint code
+              run: npm run lint
+
+    manual_image_build:
+        name: Manual image build
+        runs-on: ubuntu-latest
+        needs: lint
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_image_build }}
+        outputs:
+            image_ref: ${{ steps.export_image.outputs.image_ref }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v3
+
+            - name: Set up Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Log in to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Extract Docker metadata
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      type=raw,value=manual-${{ github.run_number }}
+                      type=sha,format=short
+
+            - name: Build and push image
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: ./Dockerfile
+                  platforms: linux/amd64
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+
+            - name: Export image ref
+              id: export_image
+              run: echo "image_ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:manual-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+    manual_image_deploy:
+        name: Manual image deploy
+        runs-on: ubuntu-latest
+        needs: manual_image_build
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_image_build && inputs.run_image_deploy }}
+        environment:
+            name: ${{ inputs.deploy_environment }}
+        steps:
+            - name: Deploy image (webhook)
+              env:
+                  DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+                  IMAGE_REF: ${{ needs.manual_image_build.outputs.image_ref }}
+              run: |
+                  if [ -z "$DEPLOY_WEBHOOK_URL" ]; then
+                    echo "Missing DEPLOY_WEBHOOK_URL secret"
+                    exit 1
+                  fi
+
+                  curl -f -X POST "$DEPLOY_WEBHOOK_URL" \
+                    -H "Content-Type: application/json" \
+                    -d "{\"image\":\"$IMAGE_REF\",\"environment\":\"${{ inputs.deploy_environment }}\"}"
