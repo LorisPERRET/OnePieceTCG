@@ -1,11 +1,11 @@
 import { DeckCard } from "@/lib/services/parseDeck";
 import {
-  copyDeckList,
-  ExportDeckListResult,
+    copyDeckList,
+    ExportDeckListResult,
 } from "@/lib/services/exportDeckList";
 
 export async function copyDeckListAction(
-  missingCards: DeckCard[]
+    missingCards: DeckCard[]
 ): Promise<ExportDeckListResult> {
-  return copyDeckList(missingCards);
+    return copyDeckList(missingCards);
 }

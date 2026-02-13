@@ -3,92 +3,92 @@
 import { DeckCard } from "@/lib/services/parseDeck";
 
 export type ExportDeckListResult = {
-  success: boolean;
-  error?: string;
-  feedback?: string;
+    success: boolean;
+    error?: string;
+    feedback?: string;
 };
 
 type MakeContentResult = {
-  success: boolean;
-  error?: string;
-  content?: string;
+    success: boolean;
+    error?: string;
+    content?: string;
 };
 
 function makeContent(
-  missingCards: DeckCard[]
+    missingCards: DeckCard[]
 ): MakeContentResult {
-  if (!missingCards.length) {
+    if (!missingCards.length) {
+        return {
+            success: false,
+            error: "Aucune carte manquante a exporter.",
+        };
+    }
+
+    const lines = missingCards
+        .filter((card) => card.missing > 0)
+        .map((card) => `${card.missing}x ${card.name} ${card.code}`);
+
+    if (!lines.length) {
+        return {
+            success: false,
+            error: "Aucune carte manquante a exporter.",
+        };
+    }
+
     return {
-      success: false,
-      error: "Aucune carte manquante a exporter.",
-    };
-  }
-
-  const lines = missingCards
-    .filter((card) => card.missing > 0)
-    .map((card) => `${card.missing}x ${card.name} ${card.code}`);
-
-  if (!lines.length) {
-    return {
-      success: false,
-      error: "Aucune carte manquante a exporter.",
-    };
-  }
-
-  return {
-    success: true,
-    content: lines.join("\n")
-  }
+        success: true,
+        content: lines.join("\n")
+    }
 }
 
 export async function downloadDeckList(
-  missingCards: DeckCard[]
+    missingCards: DeckCard[]
 ): Promise<ExportDeckListResult> {
-  const result = makeContent(missingCards)
-  if (!result.success || !result.content) {
+    const result = makeContent(missingCards)
+    if (!result.success || !result.content) {
+        return {
+            success: false,
+            error: result.error ?? "Erreur pendant l'export.",
+        };
+    }
+
+    const blob = new Blob([result.content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "cartes-manquantes.txt";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
     return {
-      success: false,
-      error: result.error ?? "Erreur pendant l'export.",
+        success: true,
     };
-  }
-
-  const blob = new Blob([result.content], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "cartes-manquantes.txt";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-
-  return {
-    success: true,
-  };
 }
 
 export async function copyDeckList(
-  missingCards: DeckCard[]
+    missingCards: DeckCard[]
 ): Promise<ExportDeckListResult> {
-  const result = makeContent(missingCards)
-  if (!result.success || !result.content) {
-    return {
-      success: false,
-      error: result.error ?? "Erreur pendant l'export.",
-    };
-  }
-  
-  try {
-    await navigator.clipboard.writeText(result.content);
+    const result = makeContent(missingCards)
+    if (!result.success || !result.content) {
+        return {
+            success: false,
+            error: result.error ?? "Erreur pendant l'export.",
+        };
+    }
+    
+    try {
+        await navigator.clipboard.writeText(result.content);
 
-    return {
-      success: true,
-      feedback: "Copié"
-    };
-  } catch {
-    return {
-      success: true,
-      error: "Échec de copie"
-    };
-  }
+        return {
+            success: true,
+            feedback: "Copié"
+        };
+    } catch {
+        return {
+            success: true,
+            error: "Échec de copie"
+        };
+    }
 }

@@ -27,7 +27,7 @@
 
 //   const params = useSearchParams()
 //   const router = useRouter()
-  
+    
 //   const handleQuery = useDebouncedCallback((query: string) => {
 //     console.log("test")
 //     console.log(query)
@@ -66,7 +66,7 @@
 //             className="pl-10"
 //           />
 //         </div>
-        
+                
 //         {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 //           <DialogTrigger asChild>
 //             <Button>

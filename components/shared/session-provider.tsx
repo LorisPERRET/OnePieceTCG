@@ -4,9 +4,9 @@ import { SessionProvider } from "next-auth/react";
 import type { ReactNode } from "react";
 
 interface Props {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export function AppSessionProvider({ children }: Props) {
-  return <SessionProvider>{children}</SessionProvider>;
+    return <SessionProvider>{children}</SessionProvider>;
 }
