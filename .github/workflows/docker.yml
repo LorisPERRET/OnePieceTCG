@@ -41,6 +41,16 @@ jobs:
             DATABASE_URL: postgresql://postgres:postgres@localhost:5432/onepiecetcg
             NEXTAUTH_SECRET: ci-nextauth-secret
         steps:
+            - name: Verify 
+              run: |
+                hostname 
+                whoami
+                id
+                docker context ls
+                docker context inspect default --format '{{json .Endpoints.docker.Host}}'
+                docker info --format 'Name={{.Name}} Server={{.ServerVersion}}'
+                docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.Image}}'
+
             - name: Checkout
               uses: actions/checkout@v4
 
