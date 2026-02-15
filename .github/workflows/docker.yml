@@ -140,8 +140,7 @@ jobs:
                   images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
                   tags: |
                       type=raw,value=latest
-                      type=raw,value=manual-${{ github.run_number }}
-                      type=sha,format=short
+                      type=sha,format=short,prefix=sha-
 
             - name: Build and push image
               uses: docker/build-push-action@v6
