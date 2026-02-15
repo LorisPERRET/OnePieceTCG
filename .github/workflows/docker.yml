@@ -186,6 +186,9 @@ jobs:
             - name: Pull and restart stack
               run: |
                   export DOCKER_CONFIG="$RUNNER_TEMP/.docker"
+                  unset DOCKER_HOST
+                  docker context use default
                   cd /onepiecetcg
-                  docker compose pull
-                  docker compose up -d --remove-orphans
+                  docker network inspect proxy >/dev/null 2>&1 || docker network create proxy
+                  docker compose -f /onepiecetcg/docker-compose.yml pull
+                  docker compose -f /onepiecetcg/docker-compose.yml up -d --remove-orphans
