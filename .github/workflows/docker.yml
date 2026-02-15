@@ -34,7 +34,7 @@ env:
     IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-    compile:
+    verify:
         name: Verify
         runs-on: [self-hosted, linux]
         steps:
@@ -48,6 +48,7 @@ jobs:
                 docker info --format 'Name={{.Name}} Server={{.ServerVersion}}'
                 docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.Image}}'
 
+    compile:
         name: Build
         runs-on: ubuntu-latest
         env:
