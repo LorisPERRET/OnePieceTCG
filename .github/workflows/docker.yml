@@ -34,20 +34,6 @@ env:
     IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-    verify:
-        name: Verify
-        runs-on: [self-hosted, linux]
-        steps:
-            - name: Verify 
-              run: |
-                hostname 
-                whoami
-                id
-                docker context ls
-                docker context inspect default --format '{{json .Endpoints.docker.Host}}'
-                docker info --format 'Name={{.Name}} Server={{.ServerVersion}}'
-                docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.Image}}'
-
     compile:
         name: Build
         runs-on: ubuntu-latest
