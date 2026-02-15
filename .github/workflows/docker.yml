@@ -140,8 +140,7 @@ jobs:
                   images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
                   tags: |
                       type=raw,value=latest
-                      type=raw,value=manual-${{ github.run_number }}
-                      type=sha,format=short
+                      type=sha,format=short,prefix=sha-
 
             - name: Build and push image
               uses: docker/build-push-action@v6
@@ -173,6 +172,10 @@ jobs:
                   GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
                   GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
               run: |
+                  export DOCKER_CONFIG="$RUNNER_TEMP/.docker"
+                  mkdir -p "$DOCKER_CONFIG"
+                  cd /onepiecetcg
+
                   if [ -z "$GHCR_USERNAME" ] || [ -z "$GHCR_TOKEN" ]; then
                     echo "Missing GHCR_USERNAME or GHCR_TOKEN secret"
                     exit 1
@@ -182,5 +185,12 @@ jobs:
 
             - name: Pull and restart stack
               run: |
-                  docker compose pull
-                  docker compose up -d --remove-orphans
+                  export DOCKER_CONFIG="$RUNNER_TEMP/.docker"
+                  export DOCKER_HOST="unix:///home/loris/.docker/desktop/docker.sock"
+                  cd /onepiecetcg
+                  echo "Docker host: $DOCKER_HOST"
+                  docker info --format 'Docker daemon name: {{.Name}}'
+                  docker network inspect proxy >/dev/null 2>&1 || docker network create proxy
+                  docker compose -f /onepiecetcg/docker-compose.yml pull
+                  docker compose -f /onepiecetcg/docker-compose.yml up -d --remove-orphans
+                  docker compose -f /onepiecetcg/docker-compose.yml ps
