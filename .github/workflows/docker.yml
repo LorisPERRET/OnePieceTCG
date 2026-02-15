@@ -172,7 +172,7 @@ jobs:
                   GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
                   GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
               run: |
-                  cd /onepiece
+                  cd /onepiecetcg
 
                   if [ -z "$GHCR_USERNAME" ] || [ -z "$GHCR_TOKEN" ]; then
                     echo "Missing GHCR_USERNAME or GHCR_TOKEN secret"
@@ -183,6 +183,6 @@ jobs:
 
             - name: Pull and restart stack
               run: |
-                  cd /onepiece
+                  cd /onepiecetcg
                   docker compose pull
                   docker compose up -d --remove-orphans
