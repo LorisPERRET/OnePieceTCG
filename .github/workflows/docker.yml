@@ -35,11 +35,8 @@ env:
 
 jobs:
     compile:
-        name: Build
-        runs-on: ubuntu-latest
-        env:
-            DATABASE_URL: postgresql://postgres:postgres@localhost:5432/onepiecetcg
-            NEXTAUTH_SECRET: ci-nextauth-secret
+        name: Verify
+        runs-on: [self-hosted, linux]
         steps:
             - name: Verify 
               run: |
@@ -51,6 +48,12 @@ jobs:
                 docker info --format 'Name={{.Name}} Server={{.ServerVersion}}'
                 docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.Image}}'
 
+        name: Build
+        runs-on: ubuntu-latest
+        env:
+            DATABASE_URL: postgresql://postgres:postgres@localhost:5432/onepiecetcg
+            NEXTAUTH_SECRET: ci-nextauth-secret
+        steps:
             - name: Checkout
               uses: actions/checkout@v4
 
