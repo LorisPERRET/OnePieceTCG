@@ -186,9 +186,9 @@ jobs:
             - name: Pull and restart stack
               run: |
                   export DOCKER_CONFIG="$RUNNER_TEMP/.docker"
+                  export DOCKER_HOST="unix:///home/loris/.docker/desktop/docker.sock"
                   cd /onepiecetcg
-                  docker context use desktop-linux
-                  echo "Docker context: $(docker context show)"
+                  echo "Docker host: $DOCKER_HOST"
                   docker info --format 'Docker daemon name: {{.Name}}'
                   docker network inspect proxy >/dev/null 2>&1 || docker network create proxy
                   docker compose -f /onepiecetcg/docker-compose.yml pull
