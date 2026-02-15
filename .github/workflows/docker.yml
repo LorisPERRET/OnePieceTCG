@@ -172,6 +172,8 @@ jobs:
                   GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
                   GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
               run: |
+                  export DOCKER_CONFIG="$RUNNER_TEMP/.docker"
+                  mkdir -p "$DOCKER_CONFIG"
                   cd /onepiecetcg
 
                   if [ -z "$GHCR_USERNAME" ] || [ -z "$GHCR_TOKEN" ]; then
@@ -183,6 +185,7 @@ jobs:
 
             - name: Pull and restart stack
               run: |
+                  export DOCKER_CONFIG="$RUNNER_TEMP/.docker"
                   cd /onepiecetcg
                   docker compose pull
                   docker compose up -d --remove-orphans
