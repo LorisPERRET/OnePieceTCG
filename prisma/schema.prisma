@@ -16,8 +16,21 @@ datasource db {
 model Card {
     id                String              @unique
     code              String
+    rarity            String?
+    type              String?
     name              String
     image             String
+    cost              Int?
+    attributeName     String?
+    attributeImage    String?
+    power             Int?
+    counter           String?
+    color             String?
+    family            String?
+    ability           String?
+    trigger           String?
+    setName           String?
+    raw               Json
     collectionEntries CollectionCard[]
     createdAt         DateTime         @default(now())
     updatedAt         DateTime         @updatedAt
