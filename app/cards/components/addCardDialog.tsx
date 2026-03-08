@@ -100,7 +100,7 @@ export function AddCardDialog({ cardId }: AddCardDialogProps) {
                             </div>
                             <button
                                 type="button"
-                                className="rounded-md p-1 text-gray-500 hover:bg-gray-100"
+                                className="cursor-pointer rounded-md p-1 text-gray-500 hover:bg-gray-100"
                                 onClick={close}
                                 aria-label="Fermer"
                             >

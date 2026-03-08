@@ -41,7 +41,7 @@ export default async function CollectionPage({ searchParams }: CollectionPagePro
                 </div>
             ) : (
                 <>
-                    <div className="grid grid-cols-5 gap-4">
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
                         {paginated.items.map(({ card, quantity }) => (
                             <CardTile
                                 id={card.id}

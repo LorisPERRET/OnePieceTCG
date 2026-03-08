@@ -24,7 +24,7 @@ export function Footer() {
                         <p className="text-sm font-bold text-gray-900">{userLabel}</p>
                     </div>
                     <Button
-                        variant="outline"
+                        variant="red"
                         size="sm"
                         onClick={() => signOut({ callbackUrl: "/auth/signin" })}
                     >
