@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@/lib/services/auth"
 import { SignInButton } from "@/app/auth/signin/components/sign-in-button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import Image from "next/image"
 
 interface SignInPageProps {
     searchParams: Promise<{
@@ -40,7 +41,9 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         <div className="min-h-screen w-full flex items-center justify-center p-4">
             <Card className="w-full max-w-md shadow-xl">
                 <CardHeader className="text-center space-y-4">
-                    <div className="mx-auto text-6xl">🏴‍☠️</div>
+                    <div className="mx-auto text-6xl">
+                        <Image src={"/icon.svg"} alt="icon" width={100} height={100} />
+                    </div>
                     <CardTitle className="text-3xl">One Piece Card Manager</CardTitle>
                     <CardDescription className="text-base">
                         Pour accéder à l&apos;application, connectez-vous avec votre compte Google
