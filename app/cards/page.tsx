@@ -32,7 +32,7 @@ export default async function CardsPage({ searchParams }: CardsPageProps) {
                     Aucune carte trouvée.
                 </div>
             ) : (
-                <div className="grid grid-cols-5 gap-4">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
                     {paginated.items.map((card) => (
                         <CardTile
                             key={card.id}

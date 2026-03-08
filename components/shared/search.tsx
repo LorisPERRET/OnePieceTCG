@@ -18,7 +18,7 @@ export function SearchInput() {
             newParams.delete('query')
         }
         router.push(`?${newParams.toString()}`)
-    }, 300)
+    }, 200)
 
     return (
         <div className="flex items-center justify-between gap-4">

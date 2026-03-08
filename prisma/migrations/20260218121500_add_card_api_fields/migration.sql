@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE "Card"
+ADD COLUMN "rarity" TEXT,
+ADD COLUMN "type" TEXT,
+ADD COLUMN "cost" INTEGER,
+ADD COLUMN "attributeName" TEXT,
+ADD COLUMN "attributeImage" TEXT,
+ADD COLUMN "power" INTEGER,
+ADD COLUMN "counter" TEXT,
+ADD COLUMN "color" TEXT,
+ADD COLUMN "family" TEXT,
+ADD COLUMN "ability" TEXT,
+ADD COLUMN "trigger" TEXT,
+ADD COLUMN "setName" TEXT,
+ADD COLUMN "raw" JSONB NOT NULL DEFAULT '{}'::JSONB;

@@ -106,7 +106,7 @@ export function DeckClient() {
         })
     }, [decklistInput, isStorageHydrated, lastAnalyzedAt, parsedDeck, runAnalyze, userId])
 
-    const totalOwned = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.owned, 0) : 0
+    const totalOwned = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + Math.min(card.owned, card.quantity), 0) : 0
     const totalNeeded = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.quantity, 0) : 0
     const totalMissing = parsedDeck ? [...parsedDeck.leader, ...parsedDeck.main].reduce((sum, card) => sum + card.missing, 0) : 0
     const completionRate = totalNeeded > 0 ? Math.round((totalOwned / totalNeeded) * 100) : 0

@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-    title: "OPTCG Collection Tracker",
+    title: "One Piece Card Manager",
     description: "Application web pour suivre et comparer une collection One Piece Card Game."
 }
 

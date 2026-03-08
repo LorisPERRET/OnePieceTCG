@@ -209,10 +209,15 @@
 
     .pager-link.is-active {
         @apply border-transparent text-white;
-        background: linear-gradient(120deg, #c04f2e, #8d3016);
+        background: linear-gradient(120deg, #5D9BCF, #7443BE);
     }
 
     .pager-link[aria-disabled="true"] {
         @apply pointer-events-none opacity-40;
+    }
+
+    .background-primary {
+        @apply border-transparent text-white;
+        background: linear-gradient(120deg, #5D9BCF, #7443BE);
     }
 }

@@ -4,10 +4,27 @@ import prisma from "../lib/prisma"
 type ApiCard = {
     id: string;
     code: string;
+    rarity?: string | null;
+    type?: string | null;
     name: string;
     images: {
-        small: string
+        small?: string | null;
+        large?: string | null;
     };
+    cost?: number | null;
+    attribute?: {
+        name?: string | null;
+        image?: string | null;
+    } | null;
+    power?: number | string | null;
+    counter?: string | null;
+    color?: string | null;
+    family?: string | null;
+    ability?: string | null;
+    trigger?: string | null;
+    set?: {
+        name?: string | null;
+    } | null;
 };
 
 type ApiResponse = {
@@ -20,6 +37,15 @@ type ApiResponse = {
 
 const API_URL = "https://apitcg.com/api/one-piece/cards"
 const API_KEY = process.env.API_TCG_KEY
+
+function toNullableInt(value: number | string | null | undefined): number | null {
+    if (value === null || value === undefined) {
+        return null
+    }
+
+    const parsed = typeof value === "number" ? value : Number(value)
+    return Number.isFinite(parsed) ? parsed : null
+}
 
 async function fetchPage(page: number): Promise<ApiResponse> {
     if (!API_KEY) {
@@ -66,14 +92,40 @@ async function main() {
             where: { id: card.id },
             update: {
                 code: card.code,
+                rarity: card.rarity ?? null,
+                type: card.type ?? null,
                 name: card.name,
                 image: card.images.small || "",
+                cost: toNullableInt(card.cost),
+                attributeName: card.attribute?.name ?? null,
+                attributeImage: card.attribute?.image ?? null,
+                power: toNullableInt(card.power),
+                counter: card.counter ?? null,
+                color: card.color ?? null,
+                family: card.family ?? null,
+                ability: card.ability ?? null,
+                trigger: card.trigger ?? null,
+                setName: card.set?.name ?? null,
+                raw: card,
             },
             create: {
                 id: card.id,
                 code: card.code,
+                rarity: card.rarity ?? null,
+                type: card.type ?? null,
                 name: card.name,
                 image: card.images.small || "",
+                cost: toNullableInt(card.cost),
+                attributeName: card.attribute?.name ?? null,
+                attributeImage: card.attribute?.image ?? null,
+                power: toNullableInt(card.power),
+                counter: card.counter ?? null,
+                color: card.color ?? null,
+                family: card.family ?? null,
+                ability: card.ability ?? null,
+                trigger: card.trigger ?? null,
+                setName: card.set?.name ?? null,
+                raw: card,
             },
         })
     )
