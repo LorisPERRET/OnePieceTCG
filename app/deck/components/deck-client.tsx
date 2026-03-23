@@ -4,7 +4,7 @@ import { startTransition, useCallback, useEffect, useState } from "react"
 import { FileText, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { DeckCard } from "@/lib/services/parseDeck"
+import { DeckCard } from "@/lib/types/deck"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { useSession } from "next-auth/react"

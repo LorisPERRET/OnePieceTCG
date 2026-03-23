@@ -1,20 +1,7 @@
 "use server"
 
 import prisma from "@/lib/prisma"
-
-export type DeckCard = {
-    quantity: number;
-    code: string;
-    name: string;
-    images: string[];
-    owned: number;
-    missing: number;
-}
-
-export type ParseDeckResult = {
-    leader: DeckCard[];
-    main: DeckCard[];
-}
+import { DeckCard, ParseDeckResult } from "@/lib/types/deck"
 
 const MAX_DECK_INPUT_CHARS = 20000
 const MAX_DECK_LINES = 300
