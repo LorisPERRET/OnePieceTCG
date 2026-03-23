@@ -53,6 +53,7 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 RUN apk add --no-cache libc6-compat netcat-openbsd
+RUN mkdir -p /app/.next/cache && chown -R nextjs:nextjs /app
 
 USER nextjs
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { DeckCard } from "@/lib/services/parseDeck"
+import { DeckCard } from "@/lib/types/deck"
 import { X } from "lucide-react"
 import { useState, useTransition } from "react"
 import { copyDeckListAction } from "../../actions/copyDeckList.action"
@@ -21,14 +21,28 @@ export function ExportDeckListDialog({ missingCards }: ExportDeckListDialogProps
         setShowExportOptions(false)
     }
 
+    const triggerDownload = (content: string, filename: string) => {
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement("a")
+
+        link.href = url
+        link.download = filename
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+        URL.revokeObjectURL(url)
+    }
+
     const handleDownloadMissingCards = () => {
         startTransition(async () => {
             const result = await downloadDeckListAction(missingCards)
-            if (!result.success) {
+            if (!result.success || !result.content || !result.filename) {
                 setFeedback(result.error ?? "Erreur pendant l'export.")
                 return
             }
 
+            triggerDownload(result.content, result.filename)
             close()
         })
     }
@@ -36,12 +50,17 @@ export function ExportDeckListDialog({ missingCards }: ExportDeckListDialogProps
     const handleCopyMissingCards = async () => {
         startTransition(async () => {
             const result = await copyDeckListAction(missingCards)
-            if (!result.success) {
+            if (!result.success || !result.content) {
                 setFeedback(result.error ?? "Erreur pendant l'export.")
                 return
             }
 
-            setFeedback(result.feedback ?? "Succès")
+            try {
+                await navigator.clipboard.writeText(result.content)
+                setFeedback("Copié")
+            } catch {
+                setFeedback("Échec de copie")
+            }
         })
     }
 

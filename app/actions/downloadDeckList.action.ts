@@ -1,13 +1,10 @@
 "use server"
 
-import { DeckCard } from "@/lib/services/parseDeck"
-import {
-    downloadDeckList,
-    ExportDeckListResult,
-} from "@/lib/services/exportDeckList"
+import { exportDeckList, ExportDeckListResult } from "@/lib/services/exportDeckList"
+import { DeckCard } from "@/lib/types/deck"
 
 export async function downloadDeckListAction(
     missingCards: DeckCard[]
 ): Promise<ExportDeckListResult> {
-    return downloadDeckList(missingCards)
+    return exportDeckList(missingCards)
 }

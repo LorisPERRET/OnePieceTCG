@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import { DeckCard } from "@/lib/services/parseDeck"
+import { DeckCard } from "@/lib/types/deck"
 import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react"
 
 interface ParsingResultProps {

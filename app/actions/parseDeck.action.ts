@@ -1,7 +1,8 @@
 "use server"
 
-import { parseDeck, ParseDeckResult } from "@/lib/services/parseDeck"
 import { auth } from "@/lib/services/auth"
+import { parseDeck } from "@/lib/services/parseDeck"
+import { ParseDeckResult } from "@/lib/types/deck"
 
 export async function parseDeckAction(
     input: string
