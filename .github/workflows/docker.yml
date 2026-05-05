@@ -186,7 +186,7 @@ jobs:
             - name: Pull and restart stack
               run: |
                   export DOCKER_CONFIG="$RUNNER_TEMP/.docker"
-                  export DOCKER_HOST="unix:///home/loris/.docker/desktop/docker.sock"
+                  export DOCKER_HOST="unix:///var/run/docker.sock"
                   cd /onepiecetcg
                   echo "Docker host: $DOCKER_HOST"
                   docker info --format 'Docker daemon name: {{.Name}}'
