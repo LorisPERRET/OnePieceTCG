@@ -58,4 +58,4 @@ RUN mkdir -p /app/.next/cache && chown -R nextjs:nextjs /app
 USER nextjs
 
 EXPOSE 3000
-CMD ["sh", "-lc", "until nc -z db 5432; do echo 'waiting for db...'; sleep 1; done; npx prisma migrate deploy && npm run sync:cards && node server.js"]
+CMD ["sh", "-lc", "until nc -z db 5432; do echo 'waiting for db...'; sleep 1; done; npx prisma migrate deploy; if [ -n \"$API_TCG_KEY\" ]; then npm run sync:cards || echo 'card sync failed, continuing startup'; else echo 'API_TCG_KEY missing, skipping card sync'; fi; node server.js"]

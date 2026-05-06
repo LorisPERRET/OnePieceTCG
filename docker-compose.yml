@@ -1,10 +1,29 @@
 services:
+  app:
+    image: ${ONEPIECETCG_IMAGE:-ghcr.io/lorisperret/onepiecetcg:latest}
+    container_name: onepiecetcg-app
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-onepiecetcg}:${POSTGRES_PASSWORD:-onepiecetcg_dev_password}@${DATABASE_HOST:-db}:${DATABASE_PORT:-5432}/${POSTGRES_DB:-onepiecetcg}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      API_TCG_KEY: ${API_TCG_KEY:-}
+    expose:
+      - "3000"
+    networks:
+      - default
+      - proxy
+
   db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: onepiecetcg
-      POSTGRES_PASSWORD: onepiecetcg_dev_password
-      POSTGRES_DB: onepiecetcg
+      POSTGRES_USER: ${POSTGRES_USER:-onepiecetcg}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-onepiecetcg_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-onepiecetcg}
     ports:
       - "5432:5432"
     volumes:
@@ -12,3 +31,8 @@ services:
 
 volumes:
   onepiecetcg_db:
+
+networks:
+  proxy:
+    external: true
+    name: ${PROXY_NETWORK:-npm_default}
