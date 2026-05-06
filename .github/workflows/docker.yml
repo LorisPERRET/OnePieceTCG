@@ -190,7 +190,7 @@ jobs:
                   cd /onepiecetcg
                   echo "Docker host: $DOCKER_HOST"
                   docker info --format 'Docker daemon name: {{.Name}}'
-                  docker network inspect proxy >/dev/null 2>&1 || docker network create proxy
+                  docker network inspect npm_default >/dev/null 2>&1 || docker network create npm_default
                   docker compose -f /onepiecetcg/docker-compose.yml pull
                   docker compose -f /onepiecetcg/docker-compose.yml up -d --remove-orphans
                   docker compose -f /onepiecetcg/docker-compose.yml ps

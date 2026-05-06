@@ -15,7 +15,7 @@ services:
       - "3000"
     networks:
       - default
-      - proxy
+      - npm_default
 
   db:
     image: postgres:16-alpine
@@ -33,6 +33,6 @@ volumes:
   onepiecetcg_db:
 
 networks:
-  proxy:
+  npm_default:
     external: true
-    name: ${PROXY_NETWORK:-npm_default}
+    name: npm_default
