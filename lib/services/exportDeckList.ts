@@ -7,6 +7,9 @@ export type ExportDeckListResult = {
     filename?: string;
 };
 
+// Retire les mentions entre parenthèses du nom, ex: "Shiki (048)" -> "Shiki"
+const cleanName = (name: string) => name.replace(/\s*\([^)]*\)/g, "").trim()
+
 export async function exportDeckList(
     missingCards: DeckCard[]
 ): Promise<ExportDeckListResult> {
@@ -19,7 +22,7 @@ export async function exportDeckList(
 
     const lines = missingCards
         .filter((card) => card.missing > 0)
-        .map((card) => `${card.missing}x ${card.name} ${card.code}`)
+        .map((card) => `${card.missing}x ${cleanName(card.name)} ${card.code}`)
 
     if (!lines.length) {
         return {

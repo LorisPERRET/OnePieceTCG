@@ -7,7 +7,7 @@ const MAX_DECK_INPUT_CHARS = 20000
 const MAX_DECK_LINES = 300
 
 type ParsedDeckLine = {
-    section: "leader" | "main";
+    section: "leader" | "main" | null;
     quantity: number;
     code: string;
     name: string;
@@ -16,8 +16,8 @@ type ParsedDeckLine = {
 function normalizeCardCode(rawCode: string): string {
     const code = rawCode.trim().toUpperCase()
 
-    // Exemple: OP03-123-SR -> OP03-123
-    const withOptionalSuffix = code.match(/^([A-Z0-9]+-\d{3})(?:-[A-Z0-9]+)?$/)
+    // Exemples: OP03-123-SR -> OP03-123, OP17-039_P1 (variante alternative) -> OP17-039
+    const withOptionalSuffix = code.match(/^([A-Z0-9]+-\d{3})(?:[-_][A-Z0-9]+)?$/)
     if (withOptionalSuffix) {
         return withOptionalSuffix[1]
     }
@@ -52,23 +52,18 @@ export async function parseDeck(input: string, userId: string): Promise<ParseDec
             continue
         }
 
-        // Parser les cartes avec regex flexible
-        // Format: 4x OP03-112-R - Charlotte Pudding (ST20)
-        const match = trimmedLine.match(/^(\d+)x\s+([A-Z0-9-]+)\s*-?\s*(.+?)(?:\(.*?\))?$/i)
+        // Parser les cartes avec regex flexible, le nom est optionnel
+        // Formats: 4x OP03-112-R - Charlotte Pudding (ST20) | 4xOP08-051 | 1xOP17-039_p1
+        const match = trimmedLine.match(/^(\d+)\s*x\s*([A-Z0-9]+-\d{3}(?:[-_][A-Z0-9]+)*)\s*(?:-\s*)?(.*?)(?:\(.*?\))?$/i)
 
         if (match) {
-            const quantity = parseInt(match[1])
-            const code = normalizeCardCode(match[2])
-            const name = match[3].trim()
-
-            if (currentSection) {
-                parsedLines.push({
-                    section: currentSection,
-                    quantity,
-                    code,
-                    name,
-                })
-            }
+            parsedLines.push({
+                // Sans titre de section, la section est déduite du type de la carte
+                section: currentSection,
+                quantity: parseInt(match[1]),
+                code: normalizeCardCode(match[2]),
+                name: match[3].trim(),
+            })
         }
     }
 
@@ -108,6 +103,7 @@ export async function parseDeck(input: string, userId: string): Promise<ParseDec
                 code: true,
                 name: true,
                 image: true,
+                type: true,
             },
         }),
     ])
@@ -118,18 +114,32 @@ export async function parseDeck(input: string, userId: string): Promise<ParseDec
         ownedByCode.set(key, (ownedByCode.get(key) ?? 0) + ownedCard.quantity)
     }
 
-    const cardInfoByCode = new Map<string, { name: string; images: string[] }>()
+    const cardInfoByCode = new Map<string, { name: string; images: string[]; type: string | null }>()
     for (const card of cards) {
         const key = card.code.toUpperCase()
         const existing = cardInfoByCode.get(key)
         if (!existing) {
-            cardInfoByCode.set(key, { name: card.name, images: [card.image] })
+            cardInfoByCode.set(key, { name: card.name, images: [card.image], type: card.type })
             continue
         }
         existing.images.push(card.image)
     }
 
+    // Fusionne les lignes d'une même carte (ex: OP17-039 et OP17-039_p1) dans leur section
+    const mergedLines = new Map<string, Omit<ParsedDeckLine, "section"> & { section: "leader" | "main" }>()
     for (const parsedLine of parsedLines) {
+        const cardInfo = cardInfoByCode.get(parsedLine.code)
+        const section = parsedLine.section ?? (cardInfo?.type === "Leader" ? "leader" : "main")
+        const key = `${section}:${parsedLine.code}`
+        const existing = mergedLines.get(key)
+        if (existing) {
+            existing.quantity += parsedLine.quantity
+        } else {
+            mergedLines.set(key, { ...parsedLine, section })
+        }
+    }
+
+    for (const parsedLine of mergedLines.values()) {
         const ownedQuantity = ownedByCode.get(parsedLine.code) ?? 0
         const owned = Math.min(ownedQuantity, parsedLine.quantity)
         const missing = Math.max(0, parsedLine.quantity - owned)
