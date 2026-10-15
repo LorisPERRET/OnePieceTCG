@@ -9,6 +9,11 @@ const nextConfig = {
                 hostname: "en.onepiece-cardgame.com",
                 pathname: "/images/cardlist/card/**",
             },
+            {
+                protocol: "https",
+                hostname: "tcgplayer-cdn.tcgplayer.com",
+                pathname: "/product/**",
+            },
         ],
     },
 }

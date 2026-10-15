@@ -5,19 +5,29 @@ import { getSearchParamNumber } from "@/lib/utils/getSearchParamNumber"
 import { CardTile } from '@/components/shared/card-tile'
 import { Pagination } from '@/components/shared/pagination'
 import { SearchInput } from '@/components/shared/search'
+import { parseCardFilters } from '@/lib/utils/cardFilters'
+import { CardFilters } from '@/components/shared/card-filters'
+import { getCardFilterOptions } from '@/lib/services/getCardFilterOptions'
 import { DeleteCardButton } from "./components/deleteCardButton"
 
-const PAGE_SIZE = 25
+const PAGE_SIZE = 50
 
 interface CollectionPageProps {
     searchParams: Promise<{
         page?: string;
         query?: string;
+        set?: string | string[];
+        color?: string | string[];
+        rarity?: string | string[];
+        type?: string | string[];
     }>;
 }
 
 export default async function CollectionPage({ searchParams }: CollectionPageProps) {
-    const { page, query } = await searchParams
+    const params = await searchParams
+    const { page, query } = params
+    const filters = parseCardFilters(params)
+    const filterOptions = await getCardFilterOptions()
     const session = await auth()
 
     if (!session?.user?.id) {
@@ -29,11 +39,14 @@ export default async function CollectionPage({ searchParams }: CollectionPagePro
         getSearchParamNumber(page, 1),
         PAGE_SIZE,
         query,
+        filters,
     )
 
     return (
         <div className="flex h-full flex-1 flex-col gap-6">
-            <SearchInput />
+            <SearchInput>
+                <CardFilters options={filterOptions} />
+            </SearchInput>
 
             {paginated.totalItems === 0 ? (
                 <div className="flex flex-1 items-center justify-center text-center text-gray-500">
@@ -60,7 +73,7 @@ export default async function CollectionPage({ searchParams }: CollectionPagePro
                     <Pagination
                         page={paginated.page}
                         totalItems={paginated.totalItems}
-                        pageSize={25}
+                        pageSize={PAGE_SIZE}
                     />
                 </>
             )}

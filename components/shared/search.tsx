@@ -3,9 +3,10 @@
 import { Search } from 'lucide-react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
+import type { ReactNode } from 'react'
 import { Input } from '@/components/ui/input'
 
-export function SearchInput() {
+export function SearchInput({ children }: { children?: ReactNode }) {
     const params = useSearchParams()
     const router = useRouter()
 
@@ -21,7 +22,7 @@ export function SearchInput() {
     }, 200)
 
     return (
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-4">
             <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
                 <Input
@@ -32,6 +33,7 @@ export function SearchInput() {
                     className="pl-10"
                 />
             </div>
+            {children}
         </div>
     )
 }
